@@ -2,6 +2,26 @@
 
     <h1>Lista zgłoszeń</h1>
 
+    <h3>Dodaj zgłoszenie</h3>
+
+    <form method="post" asp-action="Create">
+
+        <div>
+            <label>Tytuł</label>
+            <input type="text" name="Title" />
+        </div>
+
+        <div>
+            <label>Opis</label>
+            <input type="text" name="Description" />
+        </div>
+
+        <button type="submit">Dodaj</button>
+
+    </form>
+
+    <hr>
+
     <ul>
         @foreach (var ticket in Model)
 {

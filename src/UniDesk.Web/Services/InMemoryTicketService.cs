@@ -4,7 +4,8 @@ namespace UniDesk.Web.Services
 {
 	public class InMemoryTicketService : ITicketService
 	{
-		private readonly List<Ticket> _tickets = new();
+		private static List<Ticket> _tickets = new List<Ticket>();
+		private static int _nextId = 1;
 
 		public List<Ticket> GetAll()
 		{
@@ -13,8 +14,14 @@ namespace UniDesk.Web.Services
 
 		public void Add(Ticket ticket)
 		{
-			ticket.Id = _tickets.Count + 1;
+			ticket.Id = _nextId++;
 			ticket.CreatedAt = DateTime.Now;
+
+			if (ticket.Status == 0)
+			{
+				ticket.Status = TicketStatus.Open;
+			}
+
 			_tickets.Add(ticket);
 		}
 	}

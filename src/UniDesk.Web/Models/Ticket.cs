@@ -1,4 +1,6 @@
-﻿namespace UniDesk.Web.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UniDesk.Web.Models
 {
 	public enum TicketStatus
 	{
@@ -11,8 +13,12 @@
 	{
 		public int Id { get; set; }
 
+		[Required]
+		[StringLength(100)]
 		public required string Title { get; set; }
 
+		[Required]
+		[StringLength(500)]
 		public required string Description { get; set; }
 
 		public TicketStatus Status { get; set; }

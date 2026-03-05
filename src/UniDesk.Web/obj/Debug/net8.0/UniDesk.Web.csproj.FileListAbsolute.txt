@@ -28,3 +28,4 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\refint\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.genruntimeconfig.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\ref\UniDesk.Web.dll
+D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.sourcelink.json

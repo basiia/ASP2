@@ -6,5 +6,7 @@ namespace UniDesk.Web.Services
 	{
 		List<Ticket> GetAll();
 		void Add(Ticket ticket);
+		Ticket? GetById(int id);
+		List<Ticket> Search(string search);
 	}
 }

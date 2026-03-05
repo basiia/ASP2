@@ -1,4 +1,5 @@
-﻿@model IEnumerable<UniDesk.Web.Models.Ticket>
+﻿@using UniDesk.Web.Models
+@model IEnumerable<UniDesk.Web.Models.Ticket>
 
     <h1>Lista zgłoszeń</h1>
 
@@ -22,13 +23,39 @@
 
     <hr>
 
+    <h3>Szukaj zgłoszenia</h3>
+
+    <form method="get" asp-controller="Tickets" asp-action="Index">
+        <input type="text" name="search" placeholder="Szukaj..." />
+        <button type="submit">Szukaj</button>
+    </form>
+
+    <hr>
+
     <ul>
         @foreach (var ticket in Model)
 {
         <li>
-            <strong>@ticket.Title</strong> -
-            @ticket.Description -
-            @ticket.Status
+            <a asp-action="Details" asp-route-id="@ticket.Id">
+                <strong>@ticket.Title</strong>
+            </a>
+            - @ticket.Description -
+
+            @switch (ticket.Status)
+        {
+            case TicketStatus.Open:
+            <span style="color:green">@ticket.Status</span>
+                break;
+
+            case TicketStatus.InProgress:
+            <span style="color:orange">@ticket.Status</span>
+                break;
+
+            case TicketStatus.Closed:
+            <span style="color:gray">@ticket.Status</span>
+                break;
+        }
+
         </li>
 }
     </ul>

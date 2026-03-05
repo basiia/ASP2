@@ -1,4 +1,5 @@
 using UniDesk.Web.Models;
+using System.Linq;
 
 namespace UniDesk.Web.Services
 {
@@ -10,6 +11,18 @@ namespace UniDesk.Web.Services
 		public List<Ticket> GetAll()
 		{
 			return _tickets;
+		}
+
+		public Ticket? GetById(int id)
+		{
+			return _tickets.FirstOrDefault(t => t.Id == id);
+		}
+
+		public List<Ticket> Search(string search)
+		{
+			return _tickets
+				.Where(t => t.Title.Contains(search, StringComparison.OrdinalIgnoreCase))
+				.ToList();
 		}
 
 		public void Add(Ticket ticket)

@@ -13,11 +13,11 @@ namespace UniDesk.Web.Models
 	{
 		public int Id { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "Tytuł jest wymagany")]
 		[StringLength(100)]
 		public required string Title { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "Opis jest wymagany")]
 		[StringLength(500)]
 		public required string Description { get; set; }
 

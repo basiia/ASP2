@@ -1,11 +1,8 @@
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.exe
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\appsettings.Development.json
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\appsettings.json
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.staticwebassets.runtime.json
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.exe
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.deps.json
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.runtimeconfig.json
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.dll
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.GeneratedMSBuildEditorConfig.editorconfig
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.AssemblyInfoInputs.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.AssemblyInfo.cs
@@ -13,6 +10,7 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.csproj.CoreCompileInputs.ca
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.MvcApplicationPartsAssemblyInfo.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.RazorAssemblyInfo.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.RazorAssemblyInfo.cs
+D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.sourcelink.json
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\staticwebassets.build.json
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\staticwebassets.development.json
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\staticwebassets\msbuild.UniDesk.Web.Microsoft.AspNetCore.StaticWebAssets.props
@@ -26,6 +24,8 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\scopedcss\projectbundle\UniDesk.Web.bun
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\refint\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.pdb
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.deps.json
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.runtimeconfig.json
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.genruntimeconfig.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\ref\UniDesk.Web.dll
-D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.sourcelink.json

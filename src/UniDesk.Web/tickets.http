@@ -1,0 +1,12 @@
+GET http://localhost:5274/api/tickets
+Accept: application/json
+
+###
+
+POST http://localhost:5274/api/tickets
+Content-Type: application/json
+
+{
+ "title": "Printer broken",
+ "description": "Office printer not working"
+}

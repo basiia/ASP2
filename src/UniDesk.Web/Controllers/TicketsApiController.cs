@@ -73,5 +73,20 @@ namespace UniDesk.Web.Controllers
 				dto
 			);
 		}
+
+		[HttpPatch("{id}/status")]
+		public IActionResult UpdateStatus(int id, UpdateTicketStatusRequest request)
+		{
+			var ticket = _ticketService.GetById(id);
+
+			if (ticket == null)
+			{
+				return NotFound();
+			}
+
+			ticket.Status = (TicketStatus)request.Status;
+
+			return NoContent();
+		}
 	}
 }

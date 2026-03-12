@@ -10,3 +10,12 @@ Content-Type: application/json
  "title": "Printer broken",
  "description": "Office printer not working"
 }
+
+###
+
+PATCH http://localhost:5274/api/tickets/0/status
+Content-Type: application/json
+
+{
+ "status": 0
+}

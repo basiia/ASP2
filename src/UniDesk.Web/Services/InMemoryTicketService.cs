@@ -1,33 +1,36 @@
 using UniDesk.Web.Models;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace UniDesk.Web.Services
 {
-	public class InMemoryTicketService : ITicketService
+	public class DbTicketService : ITicketService
 	{
-		private static List<Ticket> _tickets = new List<Ticket>();
-		private static int _nextId = 1;
+		private readonly UniDeskDbContext _context;
+
+		public DbTicketService(UniDeskDbContext context)
+		{
+			_context = context;
+		}
 
 		public List<Ticket> GetAll()
 		{
-			return _tickets;
+			return _context.Tickets.ToList();
 		}
 
 		public Ticket? GetById(int id)
 		{
-			return _tickets.FirstOrDefault(t => t.Id == id);
+			return _context.Tickets.FirstOrDefault(t => t.Id == id);
 		}
 
 		public List<Ticket> Search(string search)
 		{
-			return _tickets
+			return _context.Tickets
 				.Where(t => t.Title.Contains(search, StringComparison.OrdinalIgnoreCase))
 				.ToList();
 		}
 
 		public void Add(Ticket ticket)
 		{
-			ticket.Id = _nextId++;
 			ticket.CreatedAt = DateTime.Now;
 
 			if (ticket.Status == 0)
@@ -35,7 +38,8 @@ namespace UniDesk.Web.Services
 				ticket.Status = TicketStatus.Open;
 			}
 
-			_tickets.Add(ticket);
+			_context.Tickets.Add(ticket);
+			_context.SaveChanges();
 		}
 	}
 }

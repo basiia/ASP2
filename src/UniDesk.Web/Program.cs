@@ -1,11 +1,15 @@
 using UniDesk.Web.Services;
+using Microsoft.EntityFrameworkCore;
+using UniDesk.Web.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddProblemDetails();
-builder.Services.AddScoped<ITicketService, InMemoryTicketService>();
+builder.Services.AddScoped<ITicketService, DbTicketService>();
+builder.Services.AddDbContext<UniDeskDbContext>(options =>
+	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -20,7 +24,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();

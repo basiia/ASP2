@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UniDesk.Web.Services;
 using UniDesk.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace UniDesk.Web.Controllers
 {
@@ -13,18 +14,64 @@ namespace UniDesk.Web.Controllers
 			_ticketService = ticketService;
 		}
 
-
+		// POST: /Tickets/Create
 		[HttpPost]
 		public IActionResult Create(Ticket ticket)
 		{
-			if (!ModelState.IsValid)
+			try
 			{
-				return View("Index", _ticketService.GetAll());
+				if (!ModelState.IsValid)
+				{
+					return View("Index", _ticketService.GetAll());
+				}
+
+				_ticketService.Add(ticket);
+
+				return RedirectToAction(nameof(Index));
+			}
+			catch (DbUpdateException ex)
+			{
+				return BadRequest($"Ошибка сохранения данных: {ex.Message}");
+			}
+		}
+
+		// GET: /Tickets/Edit/5
+		public IActionResult Edit(int id)
+		{
+			var ticket = _ticketService.GetById(id); 
+
+			if (ticket == null)
+			{
+				return NotFound(); 
 			}
 
-			_ticketService.Add(ticket);
+			return View(ticket); 
+		}
 
-			return RedirectToAction(nameof(Index));
+		// POST: /Tickets/Edit/5
+		[HttpPost]
+		public IActionResult Edit(int id, Ticket ticket)
+		{
+			if (id != ticket.Id)
+			{
+				return NotFound(); 
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_ticketService.Update(ticket); 
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					return BadRequest("Ошибка при обновлении тикета.");
+				}
+
+				return RedirectToAction(nameof(Index)); 
+			}
+
+			return View(ticket);
 		}
 
 		public IActionResult Details(int id)

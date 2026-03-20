@@ -1,5 +1,8 @@
 using UniDesk.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UniDesk.Web.Services
 {
@@ -40,6 +43,20 @@ namespace UniDesk.Web.Services
 
 			_context.Tickets.Add(ticket);
 			_context.SaveChanges();
+		}
+
+		public void Update(Ticket ticket)
+		{
+			var existingTicket = _context.Tickets.Find(ticket.Id); 
+			if (existingTicket != null)
+			{
+				existingTicket.Title = ticket.Title; 
+				existingTicket.Description = ticket.Description; 
+				existingTicket.Status = ticket.Status;
+				existingTicket.UpdatedAt = DateTime.Now; 
+
+				_context.SaveChanges(); 
+			}
 		}
 	}
 }

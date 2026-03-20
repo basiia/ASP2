@@ -8,5 +8,6 @@ namespace UniDesk.Web.Services
 		void Add(Ticket ticket);
 		Ticket? GetById(int id);
 		List<Ticket> Search(string search);
+		void Update(Ticket ticket);
 	}
 }

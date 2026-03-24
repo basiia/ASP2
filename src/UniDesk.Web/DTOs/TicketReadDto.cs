@@ -8,6 +8,8 @@ namespace UniDesk.Web.DTOs
 		public string? Title { get; set; }
 		public TicketStatus Status { get; set; }
 
+		public TicketReadDto() { }
+
 		public TicketReadDto(string title, TicketStatus status)
 		{
 			Title = title ?? throw new ArgumentNullException(nameof(title), "Title cannot be null");

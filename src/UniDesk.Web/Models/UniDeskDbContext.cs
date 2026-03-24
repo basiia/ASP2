@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using UniDesk.Web.Models;
 
 public class UniDeskDbContext : DbContext
@@ -6,6 +8,18 @@ public class UniDeskDbContext : DbContext
 	public UniDeskDbContext(DbContextOptions<UniDeskDbContext> options) : base(options) { }
 
 	public DbSet<Ticket> Tickets { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		base.OnModelCreating(modelBuilder);
+		modelBuilder.ApplyConfiguration(new TicketConfiguration());
+	}
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	{
+		optionsBuilder.UseSqlite("Data Source=UniDesk.db")
+					  .LogTo(Console.WriteLine, LogLevel.Information);
+	}
 
 	public override int SaveChanges()
 	{

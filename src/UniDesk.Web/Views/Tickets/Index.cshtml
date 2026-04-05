@@ -1,7 +1,9 @@
 ﻿@using UniDesk.Web.DTOs
-@model List<TicketListDto>
+@model UniDesk.Web.DTOs.PagedResult<UniDesk.Web.DTOs.TicketListDto>
 
     <h1>Lista zgłoszeń</h1>
+
+    <p>Łączna liczba zgłoszeń: @Model.TotalCount</p>
 
     <h3>Dodaj zgłoszenie</h3>
 
@@ -35,7 +37,7 @@
     <hr>
 
     <ul>
-        @foreach (var ticket in Model)
+        @foreach (var ticket in Model.Items)
 {
         <li>
             <!-- 🔥 ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ -->

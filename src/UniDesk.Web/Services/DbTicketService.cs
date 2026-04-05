@@ -1,8 +1,5 @@
 ﻿using UniDesk.Web.Models;
 using UniDesk.Web.DTOs;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace UniDesk.Web.Services
@@ -16,37 +13,34 @@ namespace UniDesk.Web.Services
 			_context = context;
 		}
 
-		// 🔥 НОВЫЙ МЕТОД (LAB 5 CORE)
-		public List<TicketListDto> GetAll(string? status, int page, int pageSize, bool desc)
+		public PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams)
 		{
 			IQueryable<Ticket> query = _context.Tickets.AsQueryable();
 
-			// 🔹 ФИЛЬТР
-			if (!string.IsNullOrEmpty(status))
+			// FILTER
+			if (!string.IsNullOrEmpty(queryParams.Status))
 			{
-				if (Enum.TryParse<TicketStatus>(status, out var parsedStatus))
+				if (Enum.TryParse<TicketStatus>(queryParams.Status, out var parsedStatus))
 				{
 					query = query.Where(t => t.Status == parsedStatus);
 				}
 			}
 
-			// 🔹 СОРТИРОВКА
-			if (desc)
-			{
-				query = query.OrderByDescending(t => t.CreatedAt);
-			}
-			else
-			{
-				query = query.OrderBy(t => t.CreatedAt);
-			}
+			// TOTAL COUNT (ВАЖНО ДО PAGING)
+			int totalCount = query.Count();
 
-			// 🔹 PAGING
+			// SORT
+			query = queryParams.Desc
+				? query.OrderByDescending(t => t.CreatedAt)
+				: query.OrderBy(t => t.CreatedAt);
+
+			// PAGING
 			query = query
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize);
+				.Skip((queryParams.Page - 1) * queryParams.PageSize)
+				.Take(queryParams.PageSize);
 
-			// 🔹 DTO
-			return query
+			// DTO
+			var items = query
 				.Select(t => new TicketListDto
 				{
 					Id = t.Id,
@@ -54,6 +48,12 @@ namespace UniDesk.Web.Services
 					Status = t.Status.ToString()
 				})
 				.ToList();
+
+			return new PagedResult<TicketListDto>
+			{
+				Items = items,
+				TotalCount = totalCount
+			};
 		}
 
 		public Ticket? GetById(int id)
@@ -64,7 +64,7 @@ namespace UniDesk.Web.Services
 		public List<Ticket> Search(string search)
 		{
 			return _context.Tickets
-				.Where(t => t.Title.Contains(search, StringComparison.OrdinalIgnoreCase))
+				.Where(t => t.Title.Contains(search))
 				.ToList();
 		}
 
@@ -83,14 +83,14 @@ namespace UniDesk.Web.Services
 
 		public void Update(Ticket ticket)
 		{
-			var existingTicket = _context.Tickets.Find(ticket.Id);
+			var existing = _context.Tickets.Find(ticket.Id);
 
-			if (existingTicket != null)
+			if (existing != null)
 			{
-				existingTicket.Title = ticket.Title;
-				existingTicket.Description = ticket.Description;
-				existingTicket.Status = ticket.Status;
-				existingTicket.UpdatedAt = DateTime.UtcNow;
+				existing.Title = ticket.Title;
+				existing.Description = ticket.Description;
+				existing.Status = ticket.Status;
+				existing.UpdatedAt = DateTime.UtcNow;
 
 				_context.SaveChanges();
 			}

@@ -16,12 +16,11 @@ namespace UniDesk.Web.Controllers
 			_ticketService = ticketService;
 		}
 
-		// 🔥 LAB 5 CORE
 		[HttpGet]
-		public IActionResult GetAll(string? status, int page = 1, int pageSize = 5, bool desc = false)
+		public IActionResult GetAll([FromQuery] TicketQueryParameters query)
 		{
-			var tickets = _ticketService.GetAll(status, page, pageSize, desc);
-			return Ok(tickets);
+			var result = _ticketService.GetAll(query);
+			return Ok(result);
 		}
 
 		[HttpGet("{id}")]
@@ -30,12 +29,9 @@ namespace UniDesk.Web.Controllers
 			var ticket = _ticketService.GetById(id);
 
 			if (ticket == null)
-			{
 				return NotFound();
-			}
 
 			var dto = new TicketReadDto(ticket.Title, ticket.Status);
-
 			return Ok(dto);
 		}
 
@@ -53,11 +49,7 @@ namespace UniDesk.Web.Controllers
 
 			var dto = new TicketReadDto(ticket.Title, ticket.Status);
 
-			return CreatedAtAction(
-				nameof(GetTicketById),
-				new { id = ticket.Id },
-				dto
-			);
+			return CreatedAtAction(nameof(GetTicketById), new { id = ticket.Id }, dto);
 		}
 
 		[HttpPatch("{id}/status")]
@@ -66,9 +58,7 @@ namespace UniDesk.Web.Controllers
 			var ticket = _ticketService.GetById(id);
 
 			if (ticket == null)
-			{
 				return NotFound();
-			}
 
 			ticket.Status = (TicketStatus)request.Status;
 			_ticketService.Update(ticket);

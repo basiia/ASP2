@@ -15,12 +15,6 @@ public class UniDeskDbContext : DbContext
 		modelBuilder.ApplyConfiguration(new TicketConfiguration());
 	}
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		optionsBuilder.UseSqlite("Data Source=UniDesk.db")
-					  .LogTo(Console.WriteLine, LogLevel.Information);
-	}
-
 	public override int SaveChanges()
 	{
 		var entries = ChangeTracker.Entries()
@@ -30,9 +24,9 @@ public class UniDeskDbContext : DbContext
 		{
 			if (entry.State == EntityState.Added)
 			{
-				((Ticket)entry.Entity).CreatedAt = DateTime.Now;
+				((Ticket)entry.Entity).CreatedAt = DateTime.UtcNow;
 			}
-			((Ticket)entry.Entity).UpdatedAt = DateTime.Now;
+			((Ticket)entry.Entity).UpdatedAt = DateTime.UtcNow;
 		}
 
 		return base.SaveChanges();

@@ -22,7 +22,7 @@ namespace UniDesk.Web.Controllers
 			{
 				if (!ModelState.IsValid)
 				{
-					return View("Index", _ticketService.GetAll());
+					return View("Index", _ticketService.GetAll(null, 1, 5, false));
 				}
 
 				_ticketService.Add(ticket);
@@ -86,12 +86,9 @@ namespace UniDesk.Web.Controllers
 			return View(ticket);
 		}
 
-		public IActionResult Index(string? search)
+		public IActionResult Index(string? status, int page = 1, int pageSize = 5, bool desc = false)
 		{
-			var tickets = string.IsNullOrEmpty(search)
-				? _ticketService.GetAll()
-				: _ticketService.Search(search);
-
+			var tickets = _ticketService.GetAll(status, page, pageSize, desc);
 			return View(tickets);
 		}
 	}

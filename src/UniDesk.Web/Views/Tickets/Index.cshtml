@@ -1,5 +1,5 @@
-﻿@using UniDesk.Web.Models
-@model IEnumerable<UniDesk.Web.Models.Ticket>
+﻿@using UniDesk.Web.DTOs
+@model List<TicketListDto>
 
     <h1>Lista zgłoszeń</h1>
 
@@ -25,11 +25,11 @@
 
     <hr>
 
-    <h3>Szukaj zgłoszenia</h3>
+    <h3>Filtruj zgłoszenia</h3>
 
-    <form method="get" asp-controller="Tickets" asp-action="Index">
-        <input type="text" name="search" placeholder="Szukaj..." />
-        <button type="submit">Szukaj</button>
+    <form method="get">
+        <input type="text" name="status" placeholder="Status (Open/InProgress/Closed)" />
+        <button type="submit">Filtruj</button>
     </form>
 
     <hr>
@@ -38,29 +38,35 @@
         @foreach (var ticket in Model)
 {
         <li>
+            <!-- 🔥 ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ -->
             <a asp-action="Details" asp-route-id="@ticket.Id">
                 <strong>@ticket.Title</strong>
             </a>
-            - @ticket.Description -
+            -
 
-            @switch (ticket.Status)
+            @if (ticket.Status == "Open")
         {
-            case TicketStatus.Open:
             <span style="color:green">@ticket.Status</span>
-                break;
-
-            case TicketStatus.InProgress:
-            <span style="color:orange">@ticket.Status</span>
-                break;
-
-            case TicketStatus.Closed:
-            <span style="color:gray">@ticket.Status</span>
-                break;
         }
-
+        else if (ticket.Status == "InProgress")
+        {
+            <span style="color:orange">@ticket.Status</span>
+        }
+        else if (ticket.Status == "Closed")
+        {
+            <span style="color:gray">@ticket.Status</span>
+        }
         </li>
 }
     </ul>
+
+    <hr>
+
+    <h3>Stronicowanie</h3>
+
+    <a href="?page=1">1</a>
+    <a href="?page=2">2</a>
+    <a href="?page=3">3</a>
 
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />

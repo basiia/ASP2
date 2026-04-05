@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using UniDesk.Web.DTOs;
 using UniDesk.Web.Services;
 using UniDesk.Web.Models;
@@ -16,26 +16,12 @@ namespace UniDesk.Web.Controllers
 			_ticketService = ticketService;
 		}
 
+		// 🔥 LAB 5 CORE
 		[HttpGet]
-		public ActionResult<IEnumerable<TicketReadDto>> GetTickets()
+		public IActionResult GetAll(string? status, int page = 1, int pageSize = 5, bool desc = false)
 		{
-			try
-			{
-				var tickets = _ticketService.GetAll()
-					.Select(t => new TicketReadDto(t.Title, t.Status))
-					.ToList();
-
-				if (!tickets.Any())
-				{
-					return NotFound("No tickets found.");
-				}
-
-				return Ok(tickets);
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
+			var tickets = _ticketService.GetAll(status, page, pageSize, desc);
+			return Ok(tickets);
 		}
 
 		[HttpGet("{id}")]
@@ -85,6 +71,7 @@ namespace UniDesk.Web.Controllers
 			}
 
 			ticket.Status = (TicketStatus)request.Status;
+			_ticketService.Update(ticket);
 
 			return NoContent();
 		}

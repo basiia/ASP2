@@ -6,4 +6,5 @@ public class TicketQueryParameters
 	public int Page { get; set; } = 1;
 	public int PageSize { get; set; } = 5;
 	public bool Desc { get; set; } = false;
+	public string? SortBy { get; set; }
 }

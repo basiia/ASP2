@@ -1,6 +1,7 @@
 ﻿using UniDesk.Web.Models;
 using UniDesk.Web.DTOs;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace UniDesk.Web.Services
 {
@@ -17,7 +18,6 @@ namespace UniDesk.Web.Services
 		{
 			IQueryable<Ticket> query = _context.Tickets.AsQueryable();
 
-			// FILTER
 			if (!string.IsNullOrEmpty(queryParams.Status))
 			{
 				if (Enum.TryParse<TicketStatus>(queryParams.Status, out var parsedStatus))
@@ -26,20 +26,30 @@ namespace UniDesk.Web.Services
 				}
 			}
 
-			// TOTAL COUNT (ВАЖНО ДО PAGING)
 			int totalCount = query.Count();
 
-			// SORT
-			query = queryParams.Desc
-				? query.OrderByDescending(t => t.CreatedAt)
-				: query.OrderBy(t => t.CreatedAt);
+			var allowedSorts = new List<string>
+			{
+				"Title",
+				"Status",
+				"CreatedAt"
+			};
 
-			// PAGING
+			if (!string.IsNullOrEmpty(queryParams.SortBy) && allowedSorts.Contains(queryParams.SortBy))
+			{
+				query = queryParams.Desc
+					? query.OrderByDescending(x => EF.Property<object>(x, queryParams.SortBy))
+					: query.OrderBy(x => EF.Property<object>(x, queryParams.SortBy));
+			}
+			else
+			{
+				query = query.OrderBy(x => x.Id);
+			}
+
 			query = query
 				.Skip((queryParams.Page - 1) * queryParams.PageSize)
 				.Take(queryParams.PageSize);
 
-			// DTO
 			var items = query
 				.Select(t => new TicketListDto
 				{

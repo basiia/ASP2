@@ -40,7 +40,6 @@
         @foreach (var ticket in Model.Items)
 {
         <li>
-            <!-- 🔥 ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ -->
             <a asp-action="Details" asp-route-id="@ticket.Id">
                 <strong>@ticket.Title</strong>
             </a>

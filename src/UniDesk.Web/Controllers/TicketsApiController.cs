@@ -10,10 +10,13 @@ namespace UniDesk.Web.Controllers
 	public class TicketsApiController : ControllerBase
 	{
 		private readonly ITicketService _ticketService;
+		private readonly ISystemClock _systemClock;  // Добавляем зависимость ISystemClock
 
-		public TicketsApiController(ITicketService ticketService)
+		// Внедряем зависимость ISystemClock через конструктор
+		public TicketsApiController(ITicketService ticketService, ISystemClock systemClock)
 		{
 			_ticketService = ticketService;
+			_systemClock = systemClock;  // Инициализируем ISystemClock
 		}
 
 		[HttpGet]
@@ -31,14 +34,15 @@ namespace UniDesk.Web.Controllers
 			if (ticket == null)
 				return NotFound();
 
-			var dto = new TicketReadDto(ticket.Title, ticket.Status);
+			var dto = new TicketReadDto(ticket.Title, ticket.Status.ToString());  // Преобразуем статус в строку
 			return Ok(dto);
 		}
 
 		[HttpPost]
 		public ActionResult<TicketReadDto> CreateTicket(CreateTicketRequest request)
 		{
-			var ticket = new Ticket
+			// Передаем _systemClock в конструктор Ticket
+			var ticket = new Ticket(_systemClock)
 			{
 				Title = request.Title,
 				Description = request.Description,
@@ -47,7 +51,7 @@ namespace UniDesk.Web.Controllers
 
 			_ticketService.Add(ticket);
 
-			var dto = new TicketReadDto(ticket.Title, ticket.Status);
+			var dto = new TicketReadDto(ticket.Title, ticket.Status.ToString());  // Преобразуем статус в строку
 
 			return CreatedAtAction(nameof(GetTicketById), new { id = ticket.Id }, dto);
 		}

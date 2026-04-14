@@ -6,7 +6,7 @@ namespace UniDesk.Web.Services
 {
 	public interface ITicketService
 	{
-		PagedResult<TicketListDto> GetAll(TicketQueryParameters query);
+		PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams);
 		void Add(Ticket ticket);
 		Ticket? GetById(int id);
 		List<Ticket> Search(string search);

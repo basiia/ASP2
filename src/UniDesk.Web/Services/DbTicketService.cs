@@ -1,22 +1,23 @@
-﻿using UniDesk.Web.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using UniDesk.Web.DTOs;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using UniDesk.Web.Models;
 
 namespace UniDesk.Web.Services
 {
 	public class DbTicketService : ITicketService
 	{
-		private readonly UniDeskDbContext _context;
+		private readonly ITicketRepository _ticketRepository;
+		private readonly ISystemClock _systemClock; // Внедряем ISystemClock
 
-		public DbTicketService(UniDeskDbContext context)
+		public DbTicketService(ITicketRepository ticketRepository, ISystemClock systemClock)
 		{
-			_context = context;
+			_ticketRepository = ticketRepository;
+			_systemClock = systemClock;
 		}
 
 		public PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams)
 		{
-			IQueryable<Ticket> query = _context.Tickets.AsQueryable();
+			IQueryable<Ticket> query = _ticketRepository.GetAll(queryParams);
 
 			if (!string.IsNullOrEmpty(queryParams.Status))
 			{
@@ -68,42 +69,47 @@ namespace UniDesk.Web.Services
 
 		public Ticket? GetById(int id)
 		{
-			return _context.Tickets.FirstOrDefault(t => t.Id == id);
+			return _ticketRepository.GetById(id);
 		}
 
 		public List<Ticket> Search(string search)
 		{
-			return _context.Tickets
-				.Where(t => t.Title.Contains(search))
-				.ToList();
+			return _ticketRepository.Search(search);
 		}
 
 		public void Add(Ticket ticket)
 		{
-			ticket.CreatedAt = DateTime.UtcNow;
+			ticket.CreatedAt = _systemClock.UtcNow;  // Используем инжекцию времени
 
 			if (ticket.Status == 0)
 			{
 				ticket.Status = TicketStatus.Open;
 			}
 
-			_context.Tickets.Add(ticket);
-			_context.SaveChanges();
+			_ticketRepository.Add(ticket);
 		}
 
 		public void Update(Ticket ticket)
 		{
-			var existing = _context.Tickets.Find(ticket.Id);
+			_ticketRepository.Update(ticket);
+		}
 
-			if (existing != null)
+		public void UpdateStatus(int ticketId, TicketStatus status)
+		{
+			var ticket = _ticketRepository.GetById(ticketId);
+
+			if (ticket == null)
 			{
-				existing.Title = ticket.Title;
-				existing.Description = ticket.Description;
-				existing.Status = ticket.Status;
-				existing.UpdatedAt = DateTime.UtcNow;
-
-				_context.SaveChanges();
+				throw new InvalidOperationException("Nie znaleziono biletu.");
 			}
+
+			if (ticket.Status == TicketStatus.Closed)
+			{
+				throw new InvalidOperationException("Nie można zmienić statusu zamkniętego zgłoszenia.");
+			}
+
+			ticket.Status = status;
+			_ticketRepository.Update(ticket);
 		}
 	}
 }

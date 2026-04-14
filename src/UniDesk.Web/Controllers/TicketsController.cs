@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UniDesk.Web.Services;
 using UniDesk.Web.Models;
-using Microsoft.EntityFrameworkCore;
 using UniDesk.Web.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace UniDesk.Web.Controllers
 {
 	public class TicketsController : Controller
 	{
 		private readonly ITicketService _ticketService;
+		private readonly ISystemClock _systemClock;  // Добавляем зависимость от ISystemClock
 
-		public TicketsController(ITicketService ticketService)
+		// Внедряем зависимость ISystemClock через конструктор
+		public TicketsController(ITicketService ticketService, ISystemClock systemClock)
 		{
 			_ticketService = ticketService;
+			_systemClock = systemClock;  // Инициализируем ISystemClock
 		}
 
 		[HttpPost]
@@ -24,7 +27,15 @@ namespace UniDesk.Web.Controllers
 				return View("Index", result);
 			}
 
-			_ticketService.Add(ticket);
+			// Передаем _systemClock при создании нового тикета
+			var newTicket = new Ticket(_systemClock)
+			{
+				Title = ticket.Title,
+				Description = ticket.Description,
+				Status = ticket.Status  // Статус остается как TicketStatus
+			};
+
+			_ticketService.Add(newTicket);
 			return RedirectToAction(nameof(Index));
 		}
 

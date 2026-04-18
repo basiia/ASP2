@@ -33,8 +33,12 @@ namespace UniDesk.Web.Controllers
 			if (ticket == null)
 				return NotFound();
 
-			var dto = new TicketReadDto(ticket.Title, ticket.Status.ToString());  
-			return Ok(dto);
+			var dto = new TicketReadDto
+			{
+				Id = ticket.Id,
+				Title = ticket.Title,
+				Status = ticket.Status.ToString()
+			}; return Ok(dto);
 		}
 
 		[HttpPost]
@@ -49,7 +53,12 @@ namespace UniDesk.Web.Controllers
 
 			_ticketService.Add(ticket);
 
-			var dto = new TicketReadDto(ticket.Title, ticket.Status.ToString()); 
+			var dto = new TicketReadDto
+			{
+				Id = ticket.Id,
+				Title = ticket.Title,
+				Status = ticket.Status.ToString()
+			};
 
 			return CreatedAtAction(nameof(GetTicketById), new { id = ticket.Id }, dto);
 		}

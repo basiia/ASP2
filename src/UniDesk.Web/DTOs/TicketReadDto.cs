@@ -4,15 +4,14 @@ namespace UniDesk.Web.DTOs
 	{
 		public int Id { get; set; }
 		public string? Title { get; set; }
-		public string Status { get; set; }  // Статус теперь строка, не nullable
+		public string Status { get; set; } 
 
-		// Конструктор по умолчанию
+		
 		public TicketReadDto()
 		{
-			Status = string.Empty;  // Инициализируем Status по умолчанию
+			Status = string.Empty;  
 		}
 
-		// Конструктор с параметрами
 		public TicketReadDto(string title, string status)
 		{
 			Title = title ?? throw new ArgumentNullException(nameof(title), "Title cannot be null");

@@ -8,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddProblemDetails();
 builder.Services.AddScoped<ITicketService, DbTicketService>();
+builder.Services.AddScoped<ITicketRepository, DbTicketRepository>();
+builder.Services.AddScoped<ISystemClock, SystemClock>();
 builder.Services.AddDbContext<UniDeskDbContext>(options =>
-	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+	options.UseInMemoryDatabase("TestDb"));
 
 var app = builder.Build();
 
@@ -33,3 +35,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+public partial class Program { }

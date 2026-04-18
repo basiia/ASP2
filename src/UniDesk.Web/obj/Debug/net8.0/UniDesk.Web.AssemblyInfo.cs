@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UniDesk.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8eeb9a39dacedf3b8e157152ea320ebeec2d9527")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a97f42f2a1e0ed61208295ead0839de381a0fffb")]
 [assembly: System.Reflection.AssemblyProductAttribute("UniDesk.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UniDesk.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

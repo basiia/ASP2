@@ -61,4 +61,38 @@ public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Pr
 
 		Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 	}
+
+	[Fact]
+	public async Task GetTicketById_ShouldReturnNotFound()
+	{
+		var response = await _client.GetAsync("/api/tickets/9999");
+
+		Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+	}
+
+	[Fact]
+	public async Task UpdateStatus_ShouldReturnNoContent()
+	{
+		var createRequest = new CreateTicketRequest
+		{
+			Title = "Test ticket",
+			Description = "Test description"
+		};
+
+		var createResponse = await _client.PostAsJsonAsync("/api/tickets", createRequest);
+
+		var created = await createResponse.Content.ReadFromJsonAsync<TicketReadDto>();
+
+		var updateRequest = new UpdateTicketStatusRequest
+		{
+			Status = 2
+		};
+
+		var response = await _client.PatchAsJsonAsync(
+			$"/api/tickets/{created.Id}/status",
+			updateRequest
+		);
+
+		Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+	}
 }

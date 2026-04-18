@@ -311,6 +311,7 @@ D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.Data.Sql
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
@@ -509,4 +510,3 @@ D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\refint\UniDesk.Int
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\UniDesk.IntegrationTests.pdb
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\UniDesk.IntegrationTests.genruntimeconfig.cache
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\ref\UniDesk.IntegrationTests.dll
-D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll

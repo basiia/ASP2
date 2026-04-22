@@ -8,6 +8,7 @@ namespace UniDesk.Web.Controllers
 	[ApiController]
 	[Route("api/tickets")]
 	[Produces("application/json")]
+	[Tags("Tickets")]
 	public class TicketsApiController : ControllerBase
 	{
 		private readonly ITicketService _ticketService;

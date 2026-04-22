@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UniDesk.IntegrationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8eeb9a39dacedf3b8e157152ea320ebeec2d9527")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c833408c24e476fb18bbcf210126db0194d399f")]
 [assembly: System.Reflection.AssemblyProductAttribute("UniDesk.IntegrationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UniDesk.IntegrationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

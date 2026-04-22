@@ -510,3 +510,7 @@ D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\refint\UniDesk.Int
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\UniDesk.IntegrationTests.pdb
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\UniDesk.IntegrationTests.genruntimeconfig.cache
 D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\obj\Debug\net8.0\ref\UniDesk.IntegrationTests.dll
+D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\ASP2\src\UniDesk\UniDesk.IntegrationTests\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll

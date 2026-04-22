@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using UniDesk.Web.DTOs;
 using Xunit;
@@ -25,7 +26,7 @@ public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Pr
 		var result = await response.Content.ReadFromJsonAsync<PagedResult<TicketListDto>>();
 
 		Assert.NotNull(result);
-		Assert.NotNull(result.Items);
+		Assert.NotNull(result!.Items);
 	}
 
 	[Fact]
@@ -44,12 +45,12 @@ public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Pr
 		var created = await response.Content.ReadFromJsonAsync<TicketReadDto>();
 
 		Assert.NotNull(created);
-		Assert.Equal("Test ticket", created.Title);
+		Assert.Equal("Test ticket", created!.Title);
 		Assert.Equal("Open", created.Status);
 	}
 
 	[Fact]
-	public async Task CreateTicket_ShouldReturnBadRequest_WhenTitleIsEmpty()
+	public async Task CreateTicket_ShouldReturnValidationProblemDetails_WhenTitleIsEmpty()
 	{
 		var request = new CreateTicketRequest
 		{
@@ -60,6 +61,13 @@ public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Pr
 		var response = await _client.PostAsJsonAsync("/api/tickets", request);
 
 		Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+		var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
+		Assert.NotNull(problem);
+		Assert.Equal(400, problem!.Status);
+		Assert.False(string.IsNullOrWhiteSpace(problem.Title));
+		Assert.True(problem.Errors.ContainsKey("Title"));
 	}
 
 	[Fact]
@@ -80,8 +88,9 @@ public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Pr
 		};
 
 		var createResponse = await _client.PostAsJsonAsync("/api/tickets", createRequest);
-
 		var created = await createResponse.Content.ReadFromJsonAsync<TicketReadDto>();
+
+		Assert.NotNull(created);
 
 		var updateRequest = new UpdateTicketStatusRequest
 		{
@@ -89,10 +98,24 @@ public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Pr
 		};
 
 		var response = await _client.PatchAsJsonAsync(
-			$"/api/tickets/{created.Id}/status",
+			$"/api/tickets/{created!.Id}/status",
 			updateRequest
 		);
 
 		Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+	}
+
+	[Fact]
+	public async Task SwaggerDocument_ShouldBeAvailable()
+	{
+		var response = await _client.GetAsync("/swagger/v1/swagger.json");
+
+		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+		var content = await response.Content.ReadAsStringAsync();
+
+		Assert.False(string.IsNullOrWhiteSpace(content));
+		Assert.Contains("openapi", content.ToLower());
+		Assert.Contains("/api/tickets", content);
 	}
 }

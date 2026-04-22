@@ -7,25 +7,29 @@ namespace UniDesk.Web.Controllers
 {
 	[ApiController]
 	[Route("api/tickets")]
+	[Produces("application/json")]
 	public class TicketsApiController : ControllerBase
 	{
 		private readonly ITicketService _ticketService;
-		private readonly ISystemClock _systemClock;  
+		private readonly ISystemClock _systemClock;
 
 		public TicketsApiController(ITicketService ticketService, ISystemClock systemClock)
 		{
 			_ticketService = ticketService;
-			_systemClock = systemClock; 
+			_systemClock = systemClock;
 		}
 
 		[HttpGet]
+		[ProducesResponseType(typeof(PagedResult<TicketListDto>), StatusCodes.Status200OK)]
 		public IActionResult GetAll([FromQuery] TicketQueryParameters query)
 		{
 			var result = _ticketService.GetAll(query);
 			return Ok(result);
 		}
 
-		[HttpGet("{id}")]
+		[HttpGet("{id:int}")]
+		[ProducesResponseType(typeof(TicketReadDto), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public ActionResult<TicketReadDto> GetTicketById(int id)
 		{
 			var ticket = _ticketService.GetById(id);
@@ -38,12 +42,19 @@ namespace UniDesk.Web.Controllers
 				Id = ticket.Id,
 				Title = ticket.Title,
 				Status = ticket.Status.ToString()
-			}; return Ok(dto);
+			};
+
+			return Ok(dto);
 		}
 
 		[HttpPost]
-		public ActionResult<TicketReadDto> CreateTicket(CreateTicketRequest request)
+		[ProducesResponseType(typeof(TicketReadDto), StatusCodes.Status201Created)]
+		[ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+		public ActionResult<TicketReadDto> CreateTicket([FromBody] CreateTicketRequest request)
 		{
+			if (!ModelState.IsValid)
+				return ValidationProblem(ModelState);
+
 			var ticket = new Ticket(_systemClock)
 			{
 				Title = request.Title,
@@ -63,8 +74,10 @@ namespace UniDesk.Web.Controllers
 			return CreatedAtAction(nameof(GetTicketById), new { id = ticket.Id }, dto);
 		}
 
-		[HttpPatch("{id}/status")]
-		public IActionResult UpdateStatus(int id, UpdateTicketStatusRequest request)
+		[HttpPatch("{id:int}/status")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public IActionResult UpdateStatus(int id, [FromBody] UpdateTicketStatusRequest request)
 		{
 			var ticket = _ticketService.GetById(id);
 

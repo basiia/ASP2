@@ -1,21 +1,50 @@
+### OpenAPI document
+GET http://localhost:5274/swagger/v1/swagger.json
+Accept: application/json
+
+###
+
+### Get all tickets
 GET http://localhost:5274/api/tickets
 Accept: application/json
 
 ###
 
+### Get missing ticket
+GET http://localhost:5274/api/tickets/9999
+Accept: application/json
+
+###
+
+### Create valid ticket
 POST http://localhost:5274/api/tickets
 Content-Type: application/json
+Accept: application/json
 
 {
- "title": "Printer broken",
- "description": "Office printer not working"
+  "title": "Printer broken",
+  "description": "Office printer not working"
 }
 
 ###
 
-PATCH http://localhost:5274/api/tickets/0/status
+### Create invalid ticket - validation error
+POST http://localhost:5274/api/tickets
 Content-Type: application/json
+Accept: application/json
 
 {
- "status": 0
+  "title": "",
+  "description": "Office printer not working"
+}
+
+###
+
+### Update ticket status
+PATCH http://localhost:5274/api/tickets/1/status
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": 2
 }

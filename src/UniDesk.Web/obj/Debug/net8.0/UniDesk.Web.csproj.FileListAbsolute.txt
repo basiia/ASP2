@@ -127,3 +127,8 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\refint\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.genruntimeconfig.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\ref\UniDesk.Web.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.MvcApplicationPartsAssemblyInfo.cs

@@ -1,44 +1,46 @@
 ﻿@using UniDesk.Web.DTOs
 @model UniDesk.Web.DTOs.PagedResult<UniDesk.Web.DTOs.TicketListDto>
 
-    <h1>Lista zgłoszeń</h1>
+<h1>Lista zgłoszeń</h1>
 
-    <p>Łączna liczba zgłoszeń: @Model.TotalCount</p>
+<p>Łączna liczba zgłoszeń: @Model.TotalCount</p>
 
-    <h3>Dodaj zgłoszenie</h3>
+<h3>Dodaj zgłoszenie</h3>
 
-    <form method="post" asp-action="Create">
+<form method="post" asp-action="Create">
 
-        <div asp-validation-summary="All" style="color:red"></div>
+    @Html.AntiForgeryToken()
 
-        <div>
-            <label>Tytuł</label>
-            <input type="text" name="Title" />
-        </div>
+    <div asp-validation-summary="All" style="color:red"></div>
 
-        <div>
-            <label>Opis</label>
-            <input type="text" name="Description" />
-        </div>
+    <div>
+        <label>Tytuł</label>
+        <input type="text" name="Title" />
+    </div>
 
-        <button type="submit">Dodaj</button>
+    <div>
+        <label>Opis</label>
+        <input type="text" name="Description" />
+    </div>
 
-    </form>
+    <button type="submit">Dodaj</button>
 
-    <hr>
+</form>
 
-    <h3>Filtruj zgłoszenia</h3>
+<hr>
 
-    <form method="get">
-        <input type="text" name="status" placeholder="Status (Open/InProgress/Closed)" />
-        <button type="submit">Filtruj</button>
-    </form>
+<h3>Filtruj zgłoszenia</h3>
 
-    <hr>
+<form method="get">
+    <input type="text" name="status" placeholder="Status (Open/InProgress/Closed)" />
+    <button type="submit">Filtruj</button>
+</form>
 
-    <ul>
-        @foreach (var ticket in Model.Items)
-{
+<hr>
+
+<ul>
+    @foreach (var ticket in Model.Items)
+    {
         <li>
             <a asp-action="Details" asp-route-id="@ticket.Id">
                 <strong>@ticket.Title</strong>
@@ -46,29 +48,29 @@
             -
 
             @if (ticket.Status == "Open")
-        {
-            <span style="color:green">@ticket.Status</span>
-        }
-        else if (ticket.Status == "InProgress")
-        {
-            <span style="color:orange">@ticket.Status</span>
-        }
-        else if (ticket.Status == "Closed")
-        {
-            <span style="color:gray">@ticket.Status</span>
-        }
+            {
+                <span style="color:green">@ticket.Status</span>
+            }
+            else if (ticket.Status == "InProgress")
+            {
+                <span style="color:orange">@ticket.Status</span>
+            }
+            else if (ticket.Status == "Closed")
+            {
+                <span style="color:gray">@ticket.Status</span>
+            }
         </li>
-}
-    </ul>
-
-    <hr>
-
-    <h3>Stronicowanie</h3>
-
-    <a href="?page=1">1</a>
-    <a href="?page=2">2</a>
-    <a href="?page=3">3</a>
-
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
     }
+</ul>
+
+<hr>
+
+<h3>Stronicowanie</h3>
+
+<a href="?page=1">1</a>
+<a href="?page=2">2</a>
+<a href="?page=3">3</a>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

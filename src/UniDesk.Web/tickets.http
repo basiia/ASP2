@@ -48,3 +48,54 @@ Accept: application/json
 {
   "status": 2
 }
+
+
+###
+
+### Check security headers
+GET http://localhost:5274/
+Accept: text/html
+
+###
+
+### Create invalid ticket - empty title
+POST http://localhost:5274/api/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "",
+  "description": "Office printer not working"
+}
+
+###
+
+### Create invalid ticket - empty description
+POST http://localhost:5274/api/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Printer broken",
+  "description": ""
+}
+
+###
+
+### Create invalid ticket - too long title
+POST http://localhost:5274/api/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "description": "Office printer not working"
+}
+
+###
+
+### MVC Create without anti-forgery token - should be rejected
+POST http://localhost:5274/Tickets/Create
+Content-Type: application/x-www-form-urlencoded
+
+Title=CSRF test&Description=Request without token

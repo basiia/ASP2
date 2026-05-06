@@ -19,6 +19,14 @@ builder.Services.AddDbContext<UniDeskDbContext>(options =>
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+	context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+	context.Response.Headers["X-Frame-Options"] = "DENY";
+
+	await next();
+});
+
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");

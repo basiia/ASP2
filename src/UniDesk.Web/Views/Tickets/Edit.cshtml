@@ -3,13 +3,20 @@
 <h2>Edytuj zgłoszenie</h2>
 
 <form asp-action="Edit" method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="Id" value="@Model.Id" />
+
     <div>
         <label for="Title">Tytuł:</label>
         <input type="text" id="Title" name="Title" value="@Model.Title" required />
     </div>
+
     <div>
         <label for="Description">Opis:</label>
         <textarea id="Description" name="Description" required>@Model.Description</textarea>
     </div>
+
     <button type="submit">Zaktualizuj</button>
 </form>

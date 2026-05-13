@@ -100,27 +100,30 @@ Content-Type: application/x-www-form-urlencoded
 
 Title=CSRF test&Description=Request without token
 
-### LAB 10 CORE/STRETCH - Minimal API v2 - Get all tickets
+### LAB 10 CORE - Minimal API v2 - Get all tickets
 GET http://localhost:5274/api/v2/tickets
 Accept: application/json
 
 ###
 
-### LAB 10 CORE/STRETCH - Minimal API v2 - Create ticket
+### LAB 10 CORE - Minimal API v2 - Create ticket
 POST http://localhost:5274/api/v2/tickets
 Content-Type: application/json
 Accept: application/json
 
 {
   "title": "Ticket from Minimal API v2",
-  "description": "Created during LAB 10 CORE/STRETCH"
+  "description": "Created during LAB 10 CORE"
 }
 
 ###
 
-### LAB 10 STRETCH - Minimal API v2 - Update existing ticket
-### Najpierw utwórz ticket przez POST i wpisz tutaj jego id zamiast 1
-PUT http://localhost:5274/api/v2/tickets/1
+### LAB 10 CORE - Minimal API v2 - Delete ticket
+DELETE http://localhost:5274/api/v2/tickets/13
+Accept: application/json
+
+### LAB 10 STRETCH - Minimal API v2 - Update ticket
+PUT http://localhost:5274/api/v2/tickets/13
 Content-Type: application/json
 Accept: application/json
 
@@ -129,13 +132,6 @@ Accept: application/json
   "description": "Updated by PUT endpoint in Minimal API v2",
   "status": 1
 }
-
-###
-
-### LAB 10 CORE/STRETCH - Minimal API v2 - Delete existing ticket
-### Najpierw utwórz ticket przez POST i wpisz tutaj jego id zamiast 1
-DELETE http://localhost:5274/api/v2/tickets/1
-Accept: application/json
 
 ###
 
@@ -153,5 +149,29 @@ Accept: application/json
 {
   "title": "Missing ticket",
   "description": "This should return ProblemDetails",
+  "status": 1
+}
+
+
+### LAB 10 AMBITNE - Minimal API v2 - Validation error
+POST http://localhost:5274/api/v2/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "",
+  "description": ""
+}
+
+###
+
+### LAB 10 AMBITNE - Minimal API v2 - Validation error PUT
+PUT http://localhost:5274/api/v2/tickets/9999
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "",
+  "description": "",
   "status": 1
 }

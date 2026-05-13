@@ -7,7 +7,7 @@ namespace UniDesk.Web.Services
 	public class DbTicketService : ITicketService
 	{
 		private readonly ITicketRepository _ticketRepository;
-		private readonly ISystemClock _systemClock; // Внедряем ISystemClock
+		private readonly ISystemClock _systemClock; 
 
 		public DbTicketService(ITicketRepository ticketRepository, ISystemClock systemClock)
 		{
@@ -111,5 +111,37 @@ namespace UniDesk.Web.Services
 			ticket.Status = status;
 			_ticketRepository.Update(ticket);
 		}
-	}
+
+        public TicketReadDto Create(CreateTicketRequest request)
+        {
+            var ticket = new Ticket(_systemClock)
+            {
+                Title = request.Title,
+                Description = request.Description,
+                Status = TicketStatus.Open
+            };
+
+            Add(ticket);
+
+            return new TicketReadDto
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Status = ticket.Status.ToString()
+            };
+        }
+
+        public bool Delete(int id)
+        {
+            var ticket = _ticketRepository.GetById(id);
+
+            if (ticket == null)
+            {
+                return false;
+            }
+
+            _ticketRepository.Delete(ticket);
+            return true;
+        }
+    }
 }

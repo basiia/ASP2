@@ -65,5 +65,11 @@ namespace UniDesk.Web.Services
 		{
 			return _context.Tickets.Where(t => t.Title.Contains(search)).ToList();
 		}
-	}
+
+        public void Delete(Ticket ticket)
+        {
+            _context.Tickets.Remove(ticket);
+            _context.SaveChanges();
+        }
+    }
 }

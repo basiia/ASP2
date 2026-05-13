@@ -99,3 +99,25 @@ POST http://localhost:5274/Tickets/Create
 Content-Type: application/x-www-form-urlencoded
 
 Title=CSRF test&Description=Request without token
+
+### LAB 10 CORE - Minimal API v2 - Get all tickets
+GET http://localhost:5274/api/v2/tickets
+Accept: application/json
+
+###
+
+### LAB 10 CORE - Minimal API v2 - Create ticket
+POST http://localhost:5274/api/v2/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Ticket from Minimal API v2",
+  "description": "Created during LAB 10 CORE"
+}
+
+###
+
+### LAB 10 CORE - Minimal API v2 - Delete ticket
+DELETE http://localhost:5274/api/v2/tickets/1
+Accept: application/json

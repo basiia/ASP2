@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "6XQiGAA6sFHWIYsVwtuOn6bI/zvhDZj1+tGhVE1/D+wWYwS0uYawgthIOQF1h0HUZlbp2PkK4rmitkfNOQ0lWA==",
+  "dgSpecHash": "V1KilrpRYj9S28JMIhXspZFLCJUqRSuTmhypGKjSYKQM/qGfHzWJw56cMDcdj6UXh+KoJ0aPzKkTAYrUBF1NBw==",
   "success": true,
   "projectFilePath": "D:\\ASP2\\src\\UniDesk.Web\\UniDesk.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lenovo\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.0\\microsoft.aspnetcore.openapi.8.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.codeanalysis.common\\4.5.0\\microsoft.codeanalysis.common.4.5.0.nupkg.sha512",

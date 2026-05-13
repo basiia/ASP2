@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UniDesk.Web.DTOs;
 using UniDesk.Web.Models;
+using UniDesk.Web.Exceptions;
 
 namespace UniDesk.Web.Services
 {
@@ -79,7 +80,7 @@ namespace UniDesk.Web.Services
 
 		public void Add(Ticket ticket)
 		{
-			ticket.CreatedAt = _systemClock.UtcNow;  // Используем инжекцию времени
+			ticket.CreatedAt = _systemClock.UtcNow;  
 
 			if (ticket.Status == 0)
 			{
@@ -137,11 +138,34 @@ namespace UniDesk.Web.Services
 
             if (ticket == null)
             {
-                return false;
+                throw new EntityNotFoundException($"Nie znaleziono zgłoszenia o id {id}.");
             }
 
             _ticketRepository.Delete(ticket);
             return true;
+        }
+
+        public TicketReadDto Update(int id, UpdateTicketRequest request)
+        {
+            var ticket = _ticketRepository.GetById(id);
+
+            if (ticket == null)
+            {
+                throw new EntityNotFoundException($"Nie znaleziono zgłoszenia o id {id}.");
+            }
+
+            ticket.Title = request.Title;
+            ticket.Description = request.Description;
+            ticket.Status = (TicketStatus)request.Status;
+
+            _ticketRepository.Update(ticket);
+
+            return new TicketReadDto
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Status = ticket.Status.ToString()
+            };
         }
     }
 }

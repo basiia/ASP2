@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using UniDesk.Web.DTOs;
 using UniDesk.Web.Models;
 using UniDesk.Web.Services;
+using UniDesk.Web.Middleware;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,8 @@ app.Use(async (context, next) =>
     await next();
 });
 
+app.UseMiddleware<EntityNotFoundMiddleware>();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -52,9 +56,13 @@ app.MapControllerRoute(
 
 app.MapControllers();
 
-// LAB 10 CORE - Minimal API v2
 
-app.MapGet("/api/v2/tickets", (ITicketService ticketService) =>
+// LAB 10 STRETCH - Minimal API v2 grouped endpoints
+
+var ticketsV2 = app.MapGroup("/api/v2/tickets")
+    .WithTags("Tickets v2");
+
+ticketsV2.MapGet("", (ITicketService ticketService) =>
 {
     var result = ticketService.GetAll(new TicketQueryParameters
     {
@@ -63,26 +71,36 @@ app.MapGet("/api/v2/tickets", (ITicketService ticketService) =>
     });
 
     return Results.Ok(result);
-});
+})
+.WithName("GetTicketsV2")
+.WithOpenApi();
 
-app.MapPost("/api/v2/tickets", (CreateTicketRequest request, ITicketService ticketService) =>
+ticketsV2.MapPost("", (CreateTicketRequest request, ITicketService ticketService) =>
 {
     var created = ticketService.Create(request);
 
     return Results.Created($"/api/v2/tickets/{created.Id}", created);
-});
+})
+.WithName("CreateTicketV2")
+.WithOpenApi();
 
-app.MapDelete("/api/v2/tickets/{id:int}", (int id, ITicketService ticketService) =>
+ticketsV2.MapPut("/{id:int}", (int id, UpdateTicketRequest request, ITicketService ticketService) =>
 {
-    var deleted = ticketService.Delete(id);
+    var updated = ticketService.Update(id, request);
 
-    if (!deleted)
-    {
-        return Results.NotFound();
-    }
+    return Results.Ok(updated);
+})
+.WithName("UpdateTicketV2")
+.WithOpenApi();
+
+ticketsV2.MapDelete("/{id:int}", (int id, ITicketService ticketService) =>
+{
+    ticketService.Delete(id);
 
     return Results.NoContent();
-});
+})
+.WithName("DeleteTicketV2")
+.WithOpenApi();
 
 app.Run();
 

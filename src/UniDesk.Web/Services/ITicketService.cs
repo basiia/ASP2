@@ -13,6 +13,7 @@ namespace UniDesk.Web.Services
         void Update(Ticket ticket);
 
         TicketReadDto Create(CreateTicketRequest request);
+        TicketReadDto Update(int id, UpdateTicketRequest request);
         bool Delete(int id);
     }
 }

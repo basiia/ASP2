@@ -6,6 +6,8 @@ using UniDesk.Web.Middleware;
 using UniDesk.Web.Endpoints;
 using UniDesk.Web.Filters;
 using UniDesk.Web.Data;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,7 +73,39 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthentication()
+    .AddBearerToken(IdentityConstants.BearerScheme);
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("BearerUser", policy =>
+    {
+        policy.AddAuthenticationSchemes(IdentityConstants.BearerScheme);
+        policy.RequireAuthenticatedUser();
+    });
+
+    options.AddPolicy("BearerAdmin", policy =>
+    {
+        policy.AddAuthenticationSchemes(IdentityConstants.BearerScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Admin");
+    });
+
+    options.AddPolicy("BearerTopUni", policy =>
+    {
+        policy.AddAuthenticationSchemes(IdentityConstants.BearerScheme);
+        policy.RequireAuthenticatedUser();
+
+        policy.RequireAssertion(context =>
+        {
+            var email = context.User.FindFirstValue(ClaimTypes.Email)
+                        ?? context.User.Identity?.Name;
+
+            return email != null &&
+                   email.EndsWith("@top-uni.edu.pl", StringComparison.OrdinalIgnoreCase);
+        });
+    });
+});
 
 var app = builder.Build();
 
@@ -112,6 +146,8 @@ app.MapControllerRoute(
 app.MapControllers();
 
 app.MapTicketsV2Endpoints();
+
+app.MapAmbitneTicketsEndpoints();
 
 await IdentitySeeder.SeedAsync(app.Services);
 

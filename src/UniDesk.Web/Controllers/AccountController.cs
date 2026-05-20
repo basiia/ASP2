@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UniDesk.Web.Models;
 using UniDesk.Web.ViewModels;
+using System.Security.Claims;
 
 namespace UniDesk.Web.Controllers
 {
@@ -50,9 +51,16 @@ namespace UniDesk.Web.Controllers
 
             if (result.Succeeded)
             {
+                var shortId = user.Id.Length >= 8 ? user.Id[..8] : user.Id;
+
+                await _userManager.AddClaimAsync(
+                    user,
+                    new Claim("EmployeeId", $"EMP-{shortId}"));
+
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToLocal(model.ReturnUrl);
             }
+
 
             foreach (var error in result.Errors)
             {

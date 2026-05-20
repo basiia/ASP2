@@ -180,3 +180,92 @@ Accept: application/json
 ### LAB 11 CORE - Protected API without login
 GET http://localhost:5274/api/tickets
 Accept: application/json
+
+### STRETCH - DELETE without login should return 401
+DELETE http://localhost:5274/api/tickets/1
+Accept: application/json
+
+
+@baseUrl = http://localhost:5274
+
+  ### AMBITNE 1 - Login Admin
+POST http://localhost:5274/api/ambitne/login
+Content-Type: application/json
+
+{
+  "email": "admin@unidesk.local",
+  "password": "Admin123!"
+}
+
+
+### AMBITNE 2 - Get tickets without token - should return 401
+GET http://localhost:5274/api/ambitne/tickets
+Accept: application/json
+
+
+### AMBITNE 3 - Get tickets as Admin - should return 200
+GET http://localhost:5274/api/ambitne/tickets
+Authorization: Bearer WKLEJ_ADMIN_TOKEN
+Accept: application/json
+
+
+### AMBITNE 4 - Check Admin EmployeeId claim - should return 200
+GET http://localhost:5274/api/ambitne/tickets/me
+Authorization: Bearer WKLEJ_ADMIN_TOKEN
+Accept: application/json
+
+
+### AMBITNE 5 - Admin DELETE - should return 204 or 404
+DELETE http://localhost:5274/api/ambitne/tickets/1
+Authorization: Bearer WKLEJ_ADMIN_TOKEN
+Accept: application/json
+
+
+### AMBITNE 6 - Login normal user Varya
+POST http://localhost:5274/api/ambitne/login
+Content-Type: application/json
+
+{
+  "email": "varya@gmail.com",
+  "password": "Meduza2004"
+}
+
+
+### AMBITNE 7 - Check normal user EmployeeId claim - should return 200
+GET http://localhost:5274/api/ambitne/tickets/me
+Authorization: Bearer WKLEJ_VARYA_TOKEN
+Accept: application/json
+
+
+### AMBITNE 8 - Normal user DELETE - should return 403
+DELETE http://localhost:5274/api/ambitne/tickets/1
+Authorization: Bearer WKLEJ_VARYA_TOKEN
+Accept: application/json
+
+
+### AMBITNE 9 - Normal user wrong domain - should return 403
+GET http://localhost:5274/api/ambitne/tickets/domain-resource
+Authorization: Bearer WKLEJ_VARYA_TOKEN
+Accept: application/json
+
+
+### AMBITNE 10 - Login domain user
+POST http://localhost:5274/api/ambitne/login
+Content-Type: application/json
+
+{
+  "email": "employee@top-uni.edu.pl",
+  "password": "Employee123!"
+}
+
+
+### AMBITNE 11 - Domain user can access domain resource - should return 200
+GET http://localhost:5274/api/ambitne/tickets/domain-resource
+Authorization: Bearer WKLEJ_DOMAIN_TOKEN
+Accept: application/json
+
+
+### AMBITNE 12 - Domain user DELETE - should return 403
+DELETE http://localhost:5274/api/ambitne/tickets/1
+Authorization: Bearer WKLEJ_DOMAIN_TOKEN
+Accept: application/json

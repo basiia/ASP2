@@ -42,7 +42,8 @@ namespace UniDesk.Web.Controllers
             var user = new ApplicationUser
             {
                 UserName = model.Email,
-                Email = model.Email
+                Email = model.Email,
+                OrganizationName = model.OrganizationName
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

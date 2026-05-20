@@ -5,6 +5,8 @@ using UniDesk.Web.Services;
 using UniDesk.Web.Middleware;
 using UniDesk.Web.Endpoints;
 using UniDesk.Web.Filters;
+using UniDesk.Web.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,10 +35,11 @@ builder.Services
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
         options.Password.RequireUppercase = true;
-        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireNonAlphanumeric = true;
     })
     .AddEntityFrameworkStores<UniDeskDbContext>()
     .AddDefaultTokenProviders();
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -109,6 +112,8 @@ app.MapControllerRoute(
 app.MapControllers();
 
 app.MapTicketsV2Endpoints();
+
+await IdentitySeeder.SeedAsync(app.Services);
 
 app.Run();
 

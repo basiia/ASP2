@@ -82,5 +82,26 @@ namespace UniDesk.Web.Controllers
 
             return NoContent();
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteTicket(int id)
+        {
+            var ticket = _ticketService.GetById(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            _ticketService.Delete(id);
+
+            return NoContent();
+        }
+
     }
 }

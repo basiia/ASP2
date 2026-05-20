@@ -59,7 +59,18 @@
             {
                 <span style="color:gray">@ticket.Status</span>
             }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <form method="post" asp-action="Delete" asp-route-id="@ticket.Id" style="display:inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        Usuń
+                    </button>
+                </form>
+            }
         </li>
+
     }
 </ul>
 

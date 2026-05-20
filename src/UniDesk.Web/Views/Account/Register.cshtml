@@ -20,6 +20,13 @@
     </div>
 
     <div class="mb-3">
+        <label asp-for="OrganizationName" class="form-label">Organizacja</label>
+        <input asp-for="OrganizationName" class="form-control" />
+        <span asp-validation-for="OrganizationName" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
         <label asp-for="Password" class="form-label">Hasło</label>
         <input asp-for="Password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>

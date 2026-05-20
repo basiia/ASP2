@@ -8,6 +8,9 @@ namespace UniDesk.Web.ViewModels
         [EmailAddress(ErrorMessage = "Niepoprawny adres e-mail")]
         public string Email { get; set; } = string.Empty;
 
+        [StringLength(100, ErrorMessage = "Nazwa organizacji może mieć maksymalnie 100 znaków")]
+        public string? OrganizationName { get; set; }
+
         [Required(ErrorMessage = "Hasło jest wymagane")]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Hasło musi mieć minimum 6 znaków")]

@@ -1,34 +1,41 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using UniDesk.Web.Models;
 
-public class UniDeskDbContext : DbContext
+public class UniDeskDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
 {
-	public UniDeskDbContext(DbContextOptions<UniDeskDbContext> options) : base(options) { }
+    public UniDeskDbContext(DbContextOptions<UniDeskDbContext> options) : base(options)
+    {
+    }
 
-	public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		base.OnModelCreating(modelBuilder);
-		modelBuilder.ApplyConfiguration(new TicketConfiguration());
-	}
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-	public override int SaveChanges()
-	{
-		var entries = ChangeTracker.Entries()
-			.Where(e => e.Entity is Ticket && (e.State == EntityState.Added || e.State == EntityState.Modified));
+        modelBuilder.ApplyConfiguration(new TicketConfiguration());
+    }
 
-		foreach (var entry in entries)
-		{
-			if (entry.State == EntityState.Added)
-			{
-				((Ticket)entry.Entity).CreatedAt = DateTime.UtcNow;
-			}
-			((Ticket)entry.Entity).UpdatedAt = DateTime.UtcNow;
-		}
+    public override int SaveChanges()
+    {
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.Entity is Ticket &&
+                        (e.State == EntityState.Added || e.State == EntityState.Modified));
 
-		return base.SaveChanges();
-	}
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                ((Ticket)entry.Entity).CreatedAt = DateTime.UtcNow;
+            }
+
+            ((Ticket)entry.Entity).UpdatedAt = DateTime.UtcNow;
+        }
+
+        return base.SaveChanges();
+    }
 }

@@ -175,3 +175,8 @@ Accept: application/json
   "description": "",
   "status": 1
 }
+
+
+### LAB 11 CORE - Protected API without login
+GET http://localhost:5274/api/tickets
+Accept: application/json

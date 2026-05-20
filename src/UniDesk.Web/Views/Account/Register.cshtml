@@ -1,0 +1,43 @@
+﻿@model UniDesk.Web.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Rejestracja";
+}
+
+<h2>Rejestracja</h2>
+
+<form asp-controller="Account" asp-action="Register" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">E-mail</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">Hasło</label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label">Powtórz hasło</label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zarejestruj</button>
+
+    <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-link">
+        Mam już konto
+    </a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

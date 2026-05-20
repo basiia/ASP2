@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UniDesk.Web.DTOs;
 using UniDesk.Web.Models;
 using UniDesk.Web.Services;
 
 namespace UniDesk.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/tickets")]
     [Produces("application/json")]

@@ -7,6 +7,8 @@ D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.runtimeconfig.json
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Humanizer.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -20,10 +22,14 @@ D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.OpenApi.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Mono.TextTemplating.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\SQLitePCLRaw.core.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\SQLitePCLRaw.provider.e_sqlite3.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\System.CodeDom.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\System.Composition.Convention.dll
@@ -107,6 +113,7 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.GeneratedMSBuildEditorConfi
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.AssemblyInfoInputs.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.AssemblyInfo.cs
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.csproj.CoreCompileInputs.cache
+D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.MvcApplicationPartsAssemblyInfo.cs
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.MvcApplicationPartsAssemblyInfo.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.RazorAssemblyInfo.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.RazorAssemblyInfo.cs
@@ -127,9 +134,3 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\refint\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.genruntimeconfig.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\ref\UniDesk.Web.dll
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.OpenApi.dll
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.MvcApplicationPartsAssemblyInfo.cs
-D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll

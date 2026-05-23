@@ -90,12 +90,23 @@ namespace UniDesk.Web.Services
 			_ticketRepository.Add(ticket);
 		}
 
-		public void Update(Ticket ticket)
-		{
-			_ticketRepository.Update(ticket);
-		}
+        public void Update(Ticket ticket)
+        {
+            var existingTicket = _ticketRepository.GetById(ticket.Id);
 
-		public void UpdateStatus(int ticketId, TicketStatus status)
+            if (existingTicket == null)
+            {
+                throw new EntityNotFoundException($"Nie znaleziono zgłoszenia o id {ticket.Id}.");
+            }
+
+            existingTicket.Title = ticket.Title;
+            existingTicket.Description = ticket.Description;
+            existingTicket.Status = ticket.Status;
+
+            _ticketRepository.Update(existingTicket);
+        }
+
+        public void UpdateStatus(int ticketId, TicketStatus status)
 		{
 			var ticket = _ticketRepository.GetById(ticketId);
 

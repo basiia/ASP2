@@ -83,7 +83,7 @@ namespace UniDesk.Web.Controllers
 
             _ticketService.Update(ticket);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
         [Authorize(Roles = "Admin")]
@@ -102,6 +102,5 @@ namespace UniDesk.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿@using UniDesk.Web.DTOs
+@using UniDesk.Web.Models
 @model UniDesk.Web.DTOs.PagedResult<UniDesk.Web.DTOs.TicketListDto>
 
 <h1>Lista zgłoszeń</h1>
@@ -32,10 +33,23 @@
 <h3>Filtruj zgłoszenia</h3>
 
 <form method="get">
-    <input type="text" name="status" placeholder="Status (Open/InProgress/Closed)" />
+    @{
+        var selectedStatus = Context.Request.Query["status"].ToString();
+    }
+
+    <select name="status">
+        <option value="">Wszystkie statusy</option>
+
+        @foreach (var status in Enum.GetValues<TicketStatus>())
+        {
+            <option value="@status" selected="@(selectedStatus == status.ToString() ? "selected" : null)">
+                @status
+            </option>
+        }
+    </select>
+
     <button type="submit">Filtruj</button>
 </form>
-
 <hr>
 
 <ul>
@@ -78,9 +92,13 @@
 
 <h3>Stronicowanie</h3>
 
-<a href="?page=1">1</a>
-<a href="?page=2">2</a>
-<a href="?page=3">3</a>
+@{
+    var currentStatus = Context.Request.Query["status"].ToString();
+}
+
+<a asp-action="Index" asp-route-page="1" asp-route-status="@currentStatus">1</a>
+<a asp-action="Index" asp-route-page="2" asp-route-status="@currentStatus">2</a>
+<a asp-action="Index" asp-route-page="3" asp-route-status="@currentStatus">3</a>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

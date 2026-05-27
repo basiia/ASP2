@@ -5,6 +5,7 @@ using UniDesk.Web.Services;
 using UniDesk.Web.DTOs;
 using UniDesk.UnitTests.Fakes;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace UniDesk.UnitTests.Services
 {
@@ -14,41 +15,37 @@ namespace UniDesk.UnitTests.Services
 		private readonly DbTicketService _service;
 		private readonly ISystemClock _fakeClock;
 
-		// Конструктор для инициализации объектов
-		public DbTicketServiceTests()
-		{
-			_mockRepo = new Mock<ITicketRepository>();  // Инициализация мок-объекта для репозитория
-			_fakeClock = new FakeClock();  // Инициализация FakeClock для использования в тестах
-			_service = new DbTicketService(_mockRepo.Object, _fakeClock);  // Создание экземпляра DbTicketService с _fakeClock
-		}
+        public DbTicketServiceTests()
+        {
+            _mockRepo = new Mock<ITicketRepository>();
+            _fakeClock = new FakeClock();
 
-		// Тест для обновления статуса тикета
-		[Fact]
+            _service = new DbTicketService(
+                _mockRepo.Object,
+                _fakeClock,
+                NullLogger<DbTicketService>.Instance);
+        }
+
+        [Fact]
 		public void UpdateStatus_ShouldChangeStatus_WhenValidStatusIsProvided()
 		{
-			// Создаем тикет, передаем _fakeClock в конструктор
 			var ticket = new Ticket(_fakeClock)
 			{
 				Title = "Sample Title",
 				Description = "Sample Description"
 			};
 
-			// Настройка мока репозитория для возврата созданного тикета
 			_mockRepo.Setup(repo => repo.GetById(It.IsAny<int>())).Returns(ticket);
 
-			// Обновление статуса тикета через сервис
 			_service.UpdateStatus(ticket.Id, TicketStatus.InProgress);
 
-			// Проверка, что статус был изменен на "InProgress"
 			Assert.Equal(TicketStatus.InProgress, ticket.Status);
-			_mockRepo.Verify(repo => repo.Update(ticket), Times.Once);  // Проверяем, что обновление было вызвано один раз
+			_mockRepo.Verify(repo => repo.Update(ticket), Times.Once);  
 		}
 
-		// Тест для добавления тикета
 		[Fact]
 		public void Add_ShouldAddTicket_WhenValidTicket()
 		{
-			// Создаем новый тикет
 			var ticket = new Ticket(_fakeClock)
 			{
 				Title = "New Ticket",
@@ -56,25 +53,20 @@ namespace UniDesk.UnitTests.Services
 				Status = TicketStatus.Open
 			};
 
-			// Вызов метода Add сервиса
 			_service.Add(ticket);
 
-			// Проверка, что метод Add был вызван один раз
 			_mockRepo.Verify(m => m.Add(It.IsAny<Ticket>()), Times.Once);
 		}
 
-		// Тест для получения списка тикетов с пагинацией
 		[Fact]
 		public void GetAll_ShouldReturnPagedResults_WhenPageSizeIsSet()
 		{
-			// Настройка параметров запроса
 			var queryParams = new TicketQueryParameters
 			{
 				Page = 1,
 				PageSize = 10,
 			};
 
-			// Мокируем данные тикетов
 			var tickets = new List<Ticket>
 			{
 				new Ticket(_fakeClock) { Id = 1, Title = "Ticket 1" },
@@ -94,16 +86,13 @@ namespace UniDesk.UnitTests.Services
 				new Ticket(_fakeClock) { Id = 15, Title = "Ticket 15" }
 			};
 
-			// Настройка мока репозитория для возврата списка тикетов
 			_mockRepo.Setup(repo => repo.GetAll(queryParams)).Returns(tickets.AsQueryable());
 
-			// Вызов метода GetAll для получения тикетов с пагинацией
 			var result = _service.GetAll(queryParams);
 
-			// Проверка правильности пагинации
-			Assert.Equal(10, result.Items.Count);  // Проверка, что в ответе 10 элементов
-			Assert.Equal("Ticket 1", result.Items[0].Title);  // Проверка первого элемента
-			Assert.Equal("Ticket 10", result.Items[9].Title);  // Проверка последнего элемента на странице
+			Assert.Equal(10, result.Items.Count);  
+			Assert.Equal("Ticket 1", result.Items[0].Title); 
+			Assert.Equal("Ticket 10", result.Items[9].Title);  
 		}
 	}
 }

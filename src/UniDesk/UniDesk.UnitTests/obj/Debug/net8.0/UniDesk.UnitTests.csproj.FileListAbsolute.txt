@@ -1,10 +1,4 @@
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\CoverletSourceRootsMapping_UniDesk.UnitTests
-D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.csproj.AssemblyReference.cache
-D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.GeneratedMSBuildEditorConfig.editorconfig
-D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.AssemblyInfoInputs.cache
-D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.AssemblyInfo.cs
-D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.csproj.CoreCompileInputs.cache
-D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.sourcelink.json
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\testhost.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\UniDesk.Web.deps.json
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\UniDesk.Web.runtimeconfig.json
@@ -22,6 +16,8 @@ D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\UniDesk.UnitTests.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\UniDesk.UnitTests.pdb
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Castle.Core.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Humanizer.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -32,9 +28,11 @@ D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.Data.Sqlite.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.OpenApi.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.TestPlatform.CoreUtilities.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.TestPlatform.PlatformAbstractions.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
@@ -49,6 +47,9 @@ D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\NuGet.Frameworks.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\SQLitePCLRaw.core.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\SQLitePCLRaw.provider.e_sqlite3.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\System.CodeDom.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\System.Composition.Convention.dll
@@ -198,6 +199,12 @@ D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\runtimes\win-x64\native\e
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\UniDesk.Web.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\bin\Debug\net8.0\UniDesk.Web.pdb
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.csproj.AssemblyReference.cache
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.GeneratedMSBuildEditorConfig.editorconfig
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.AssemblyInfoInputs.cache
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.AssemblyInfo.cs
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.csproj.CoreCompileInputs.cache
+D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.sourcelink.json
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk..6A9EB76C.Up2Date
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\UniDesk.UnitTests.dll
 D:\ASP2\src\UniDesk\UniDesk.UnitTests\obj\Debug\net8.0\refint\UniDesk.UnitTests.dll

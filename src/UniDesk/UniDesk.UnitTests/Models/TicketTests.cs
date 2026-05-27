@@ -5,6 +5,7 @@ using UniDesk.Web.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using UniDesk.UnitTests.Fakes;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace UniDesk.UnitTests.Models
 {
@@ -17,9 +18,12 @@ namespace UniDesk.UnitTests.Models
 		public TicketTests()
 		{
 			_mockRepo = new Mock<ITicketRepository>();
-			_fakeClock = new FakeClock();  // Используем FakeClock
-			_service = new DbTicketService(_mockRepo.Object, _fakeClock);
-		}
+			_fakeClock = new FakeClock();
+            _service = new DbTicketService(
+                _mockRepo.Object,
+                _fakeClock,
+                NullLogger<DbTicketService>.Instance);
+        }
 
 		[Fact]
 		public void Ticket_ShouldHaveCreatedAt_WhenCreated()

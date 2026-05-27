@@ -8,9 +8,28 @@ using UniDesk.Web.Filters;
 using UniDesk.Web.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Json;
+using System.Text.Json;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File(
+        formatter: new JsonFormatter(),
+        path: "Logs/unidesk-log-.json",
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddProblemDetails();
@@ -28,6 +47,15 @@ builder.Services.AddScoped<ValidationFilter>();
 builder.Services.AddDbContext<UniDeskDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHealthChecks()
+    .AddCheck(
+        "application",
+        () => HealthCheckResult.Healthy("Application is running"),
+        tags: new[] { "live", "ready" })
+    .AddDbContextCheck<UniDeskDbContext>(
+        name: "database",
+        tags: new[] { "ready" });
+
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -41,7 +69,6 @@ builder.Services
     })
     .AddEntityFrameworkStores<UniDeskDbContext>()
     .AddDefaultTokenProviders();
-
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -128,6 +155,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseSerilogRequestLogging();
+
 app.UseRouting();
 
 app.UseAuthentication();
@@ -149,8 +178,42 @@ app.MapTicketsV2Endpoints();
 
 app.MapAmbitneTicketsEndpoints();
 
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("live"),
+    ResponseWriter = WriteHealthResponse
+}).AllowAnonymous();
+
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready"),
+    ResponseWriter = WriteHealthResponse
+}).AllowAnonymous();
+
 await IdentitySeeder.SeedAsync(app.Services);
 
+app.Lifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+
 app.Run();
+
+static Task WriteHealthResponse(HttpContext context, HealthReport report)
+{
+    context.Response.ContentType = "application/json";
+
+    var response = new
+    {
+        status = report.Status.ToString(),
+        checks = report.Entries.ToDictionary(
+            entry => entry.Key,
+            entry => new
+            {
+                status = entry.Value.Status.ToString(),
+                description = entry.Value.Description,
+                duration = entry.Value.Duration.ToString()
+            })
+    };
+
+    return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+}
 
 public partial class Program { }

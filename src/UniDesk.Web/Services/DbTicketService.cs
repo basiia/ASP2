@@ -7,16 +7,21 @@ namespace UniDesk.Web.Services
 {
 	public class DbTicketService : ITicketService
 	{
-		private readonly ITicketRepository _ticketRepository;
-		private readonly ISystemClock _systemClock; 
+        private readonly ITicketRepository _ticketRepository;
+        private readonly ISystemClock _systemClock;
+        private readonly ILogger<DbTicketService> _logger;
 
-		public DbTicketService(ITicketRepository ticketRepository, ISystemClock systemClock)
-		{
-			_ticketRepository = ticketRepository;
-			_systemClock = systemClock;
-		}
+        public DbTicketService(
+            ITicketRepository ticketRepository,
+            ISystemClock systemClock,
+            ILogger<DbTicketService> logger)
+        {
+            _ticketRepository = ticketRepository;
+            _systemClock = systemClock;
+            _logger = logger;
+        }
 
-		public PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams)
+        public PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams)
 		{
 			IQueryable<Ticket> query = _ticketRepository.GetAll(queryParams);
 
@@ -78,17 +83,24 @@ namespace UniDesk.Web.Services
 			return _ticketRepository.Search(search);
 		}
 
-		public void Add(Ticket ticket)
-		{
-			ticket.CreatedAt = _systemClock.UtcNow;  
+        public void Add(Ticket ticket)
+        {
+            ticket.CreatedAt = _systemClock.UtcNow;
 
-			if (ticket.Status == 0)
-			{
-				ticket.Status = TicketStatus.Open;
-			}
+            if (ticket.Status == 0)
+            {
+                ticket.Status = TicketStatus.Open;
+            }
 
-			_ticketRepository.Add(ticket);
-		}
+            _ticketRepository.Add(ticket);
+
+            _logger.LogInformation(
+                "Ticket {TicketId} created in module {Module} with status {Status} and title {Title}",
+                ticket.Id,
+                "Tickets",
+                ticket.Status.ToString(),
+                ticket.Title);
+        }
 
         public void Update(Ticket ticket)
         {

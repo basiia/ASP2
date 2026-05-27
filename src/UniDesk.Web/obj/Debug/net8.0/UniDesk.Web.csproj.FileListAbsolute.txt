@@ -134,3 +134,13 @@ D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\refint\UniDesk.Web.dll
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.pdb
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\UniDesk.Web.genruntimeconfig.cache
 D:\ASP2\src\UniDesk.Web\obj\Debug\net8.0\ref\UniDesk.Web.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.AspNetCore.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Extensions.Hosting.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Extensions.Logging.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Formatting.Compact.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Settings.Configuration.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Sinks.Console.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Sinks.Debug.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Sinks.File.dll

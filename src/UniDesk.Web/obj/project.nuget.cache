@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xzWWOjNdEVs18mMb12OeSJ8gpCsTlkXAEoivxQd2jvRCHwqZDmw9zNe3pKZD/Ptkwz+fBboMK7mYjNUVzd5w0Q==",
+  "dgSpecHash": "aA+lVeiqtkVKW5aZajjQtMWyGs0LuRasVGnKFNKKLsMnagVSo+kMDl6hvPxXVltfV4tj0vLu2i1WS7b6vWKAOQ==",
   "success": true,
   "projectFilePath": "D:\\ASP2\\src\\UniDesk.Web\\UniDesk.Web.csproj",
   "expectedPackageFiles": [
@@ -47,8 +47,9 @@
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.openapi\\1.6.23\\microsoft.openapi.1.6.23.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
-    "C:\\Users\\Lenovo\\.nuget\\packages\\serilog\\3.1.1\\serilog.3.1.1.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\serilog\\4.0.0\\serilog.4.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\serilog.aspnetcore\\8.0.0\\serilog.aspnetcore.8.0.0.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\serilog.enrichers.thread\\4.0.0\\serilog.enrichers.thread.4.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\serilog.extensions.hosting\\8.0.0\\serilog.extensions.hosting.8.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\serilog.extensions.logging\\8.0.0\\serilog.extensions.logging.8.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\serilog.formatting.compact\\2.0.0\\serilog.formatting.compact.2.0.0.nupkg.sha512",

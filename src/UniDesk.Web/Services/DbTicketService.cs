@@ -2,6 +2,7 @@
 using UniDesk.Web.DTOs;
 using UniDesk.Web.Models;
 using UniDesk.Web.Exceptions;
+using System.Diagnostics;
 
 namespace UniDesk.Web.Services
 {
@@ -10,6 +11,8 @@ namespace UniDesk.Web.Services
         private readonly ITicketRepository _ticketRepository;
         private readonly ISystemClock _systemClock;
         private readonly ILogger<DbTicketService> _logger;
+
+        private const long SlowDatabaseOperationThresholdMs = 50;
 
         public DbTicketService(
             ITicketRepository ticketRepository,
@@ -92,14 +95,28 @@ namespace UniDesk.Web.Services
                 ticket.Status = TicketStatus.Open;
             }
 
+            var stopwatch = Stopwatch.StartNew();
+
             _ticketRepository.Add(ticket);
 
+            stopwatch.Stop();
+
             _logger.LogInformation(
-                "Ticket {TicketId} created in module {Module} with status {Status} and title {Title}",
+                "Ticket {TicketId} created in module {Module} with status {Status} and title {Title} in {ElapsedMilliseconds} ms",
                 ticket.Id,
                 "Tickets",
                 ticket.Status.ToString(),
-                ticket.Title);
+                ticket.Title,
+                stopwatch.ElapsedMilliseconds);
+
+            if (stopwatch.ElapsedMilliseconds > SlowDatabaseOperationThresholdMs)
+            {
+                _logger.LogWarning(
+                    "Slow ticket create operation detected for ticket {TicketId}. Elapsed {ElapsedMilliseconds} ms exceeded threshold {ThresholdMilliseconds} ms",
+                    ticket.Id,
+                    stopwatch.ElapsedMilliseconds,
+                    SlowDatabaseOperationThresholdMs);
+            }
         }
 
         public void Update(Ticket ticket)

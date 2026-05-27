@@ -15,11 +15,18 @@ using Serilog.Events;
 using Serilog.Formatting.Json;
 using System.Text.Json;
 
+var environmentName =
+    System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+    ?? "Production";
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .Enrich.FromLogContext()
+    .Enrich.WithProperty("Environment", environmentName)
+    .Enrich.WithProperty("MachineName", System.Environment.MachineName)
+    .Enrich.WithThreadId()
     .WriteTo.Console()
     .WriteTo.File(
         formatter: new JsonFormatter(),
@@ -144,6 +151,8 @@ app.Use(async (context, next) =>
     await next();
 });
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+
 app.UseMiddleware<EntityNotFoundMiddleware>();
 
 if (!app.Environment.IsDevelopment())
@@ -155,7 +164,19 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(options =>
+{
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        if (httpContext.Items.TryGetValue("CorrelationId", out var correlationId))
+        {
+            diagnosticContext.Set("CorrelationId", correlationId);
+        }
+
+        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+        diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+    };
+});
 
 app.UseRouting();
 
@@ -203,17 +224,26 @@ static Task WriteHealthResponse(HttpContext context, HealthReport report)
     var response = new
     {
         status = report.Status.ToString(),
+        timestamp = DateTimeOffset.UtcNow,
+        totalDuration = report.TotalDuration.ToString(),
         checks = report.Entries.ToDictionary(
             entry => entry.Key,
             entry => new
             {
                 status = entry.Value.Status.ToString(),
                 description = entry.Value.Description,
-                duration = entry.Value.Duration.ToString()
+                duration = entry.Value.Duration.ToString(),
+                exception = entry.Value.Exception?.Message,
+                data = entry.Value.Data
             })
     };
 
-    return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    var options = new JsonSerializerOptions
+    {
+        WriteIndented = true
+    };
+
+    return context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
 }
 
 public partial class Program { }

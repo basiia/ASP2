@@ -144,3 +144,5 @@ D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Settings.Configuration.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Sinks.Console.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Sinks.Debug.dll
 D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Sinks.File.dll
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Logs\unidesk-log-20260527.json
+D:\ASP2\src\UniDesk.Web\bin\Debug\net8.0\Serilog.Enrichers.Thread.dll

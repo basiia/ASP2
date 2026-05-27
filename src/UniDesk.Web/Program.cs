@@ -6,26 +6,24 @@ using UniDesk.Web.Middleware;
 using UniDesk.Web.Endpoints;
 using UniDesk.Web.Filters;
 using UniDesk.Web.Data;
+using UniDesk.Web.HealthChecks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Serilog;
-using Serilog.Events;
 using Serilog.Formatting.Json;
 using System.Text.Json;
 
-var environmentName =
-    System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-    ?? "Production";
+var builder = WebApplication.CreateBuilder(args);
+
+var environmentName = builder.Environment.EnvironmentName;
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .Enrich.WithProperty("Environment", environmentName)
-    .Enrich.WithProperty("MachineName", System.Environment.MachineName)
+    .Enrich.WithProperty("MachineName", Environment.MachineName)
     .Enrich.WithThreadId()
     .WriteTo.Console()
     .WriteTo.File(
@@ -33,8 +31,6 @@ Log.Logger = new LoggerConfiguration()
         path: "Logs/unidesk-log-.json",
         rollingInterval: RollingInterval.Day)
     .CreateLogger();
-
-var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
@@ -61,6 +57,10 @@ builder.Services.AddHealthChecks()
         tags: new[] { "live", "ready" })
     .AddDbContextCheck<UniDeskDbContext>(
         name: "database",
+        tags: new[] { "ready" })
+    .AddCheck<DiskSpaceHealthCheck>(
+        name: "disk_space",
+        failureStatus: HealthStatus.Unhealthy,
         tags: new[] { "ready" });
 
 builder.Services
@@ -245,5 +245,4 @@ static Task WriteHealthResponse(HttpContext context, HealthReport report)
 
     return context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
 }
-
 public partial class Program { }

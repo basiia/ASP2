@@ -3995,6 +3995,7 @@
       "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore >= 8.0.0",
       "Serilog.AspNetCore >= 8.0.0",
       "Serilog.Enrichers.Thread >= 4.0.0",
+      "Serilog.Settings.Configuration >= 8.0.0",
       "Serilog.Sinks.Console >= 5.0.1",
       "Serilog.Sinks.File >= 5.0.0",
       "Swashbuckle.AspNetCore >= 8.1.4"
@@ -4086,6 +4087,10 @@
           "Serilog.Enrichers.Thread": {
             "target": "Package",
             "version": "[4.0.0, )"
+          },
+          "Serilog.Settings.Configuration": {
+            "target": "Package",
+            "version": "[8.0.0, )"
           },
           "Serilog.Sinks.Console": {
             "target": "Package",

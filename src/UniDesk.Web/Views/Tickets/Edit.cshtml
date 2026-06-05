@@ -1,46 +1,57 @@
-@using UniDesk.Web.Models
+﻿@using UniDesk.Web.Models
 @model UniDesk.Web.ViewModels.TicketEditViewModel
 
-<h1>Edytuj zgloszenie</h1>
+@{
+    ViewData["Title"] = "Edytuj zgłoszenie";
+}
 
-<form asp-action="Edit" asp-route-id="@Model.Id" method="post">
-    @Html.AntiForgeryToken()
+<div class="mb-4">
+    <h1 class="fw-semibold">Edytuj zgłoszenie</h1>
+    <p class="text-muted mb-0">Zmień dane zgłoszenia i zapisz aktualizację.</p>
+</div>
 
-    <input type="hidden" asp-for="Id" />
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
 
-    <div asp-validation-summary="All" style="color:red"></div>
+            <input type="hidden" asp-for="Id" />
 
-    <div>
-        <label asp-for="Title">Tytul:</label>
-        <input asp-for="Title" />
-        <span asp-validation-for="Title" style="color:red"></span>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Tytuł</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Opis</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-select">
+                    @foreach (var status in Enum.GetValues<TicketStatus>())
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Zaktualizuj
+            </button>
+
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                Powrót
+            </a>
+        </form>
     </div>
-
-    <div>
-        <label asp-for="Description">Opis:</label>
-        <textarea asp-for="Description"></textarea>
-        <span asp-validation-for="Description" style="color:red"></span>
-    </div>
-
-    <div>
-        <label asp-for="Status">Status:</label>
-        <select asp-for="Status">
-            @foreach (var status in Enum.GetValues<TicketStatus>())
-            {
-                <option value="@status" selected="@(Model.Status == status ? "selected" : null)">
-                    @status
-                </option>
-            }
-        </select>
-        <span asp-validation-for="Status" style="color:red"></span>
-    </div>
-
-    <button type="submit">Zaktualizuj</button>
-</form>
-
-<p>
-    <a asp-action="Details" asp-route-id="@Model.Id">Powrot do szczegolow</a>
-</p>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -2,103 +2,151 @@
 @using UniDesk.Web.Models
 @model UniDesk.Web.DTOs.PagedResult<UniDesk.Web.DTOs.TicketListDto>
 
-<h1>Lista zgłoszeń</h1>
-
-<p>Łączna liczba zgłoszeń: @Model.TotalCount</p>
-
-<h3>Dodaj zgłoszenie</h3>
-
-<form method="post" asp-action="Create">
-
-    @Html.AntiForgeryToken()
-
-    <div asp-validation-summary="All" style="color:red"></div>
-
-    <div>
-        <label>Tytuł</label>
-        <input type="text" name="Title" />
-    </div>
-
-    <div>
-        <label>Opis</label>
-        <input type="text" name="Description" />
-    </div>
-
-    <button type="submit">Dodaj</button>
-
-</form>
-
-<hr>
-
-<h3>Filtruj zgłoszenia</h3>
-
-<form method="get">
-    @{
-        var selectedStatus = Context.Request.Query["status"].ToString();
-    }
-
-    <select name="status">
-        <option value="">Wszystkie statusy</option>
-
-        @foreach (var status in Enum.GetValues<TicketStatus>())
-        {
-            <option value="@status" selected="@(selectedStatus == status.ToString() ? "selected" : null)">
-                @status
-            </option>
-        }
-    </select>
-
-    <button type="submit">Filtruj</button>
-</form>
-<hr>
-
-<ul>
-    @foreach (var ticket in Model.Items)
-    {
-        <li>
-            <a asp-action="Details" asp-route-id="@ticket.Id">
-                <strong>@ticket.Title</strong>
-            </a>
-            -
-
-            @if (ticket.Status == "New")
-            {
-                <span style="color:green">@ticket.Status</span>
-            }
-            else if (ticket.Status == "InProgress")
-            {
-                <span style="color:orange">@ticket.Status</span>
-            }
-            else if (ticket.Status == "Closed")
-            {
-                <span style="color:gray">@ticket.Status</span>
-            }
-
-            @if (User.IsInRole("Admin"))
-            {
-                <form method="post" asp-action="Delete" asp-route-id="@ticket.Id" style="display:inline">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        Usuń
-                    </button>
-                </form>
-            }
-        </li>
-
-    }
-</ul>
-
-<hr>
-
-<h3>Stronicowanie</h3>
-
 @{
+    ViewData["Title"] = "Lista zgłoszeń";
+    var selectedStatus = Context.Request.Query["status"].ToString();
     var currentStatus = Context.Request.Query["status"].ToString();
 }
 
-<a asp-action="Index" asp-route-page="1" asp-route-status="@currentStatus">1</a>
-<a asp-action="Index" asp-route-page="2" asp-route-status="@currentStatus">2</a>
-<a asp-action="Index" asp-route-page="3" asp-route-status="@currentStatus">3</a>
+<div class="mb-4">
+    <h1 class="fw-semibold">Lista zgłoszeń</h1>
+    <p class="text-muted mb-0">Łączna liczba zgłoszeń: @Model.TotalCount</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Dodaj zgłoszenie</h5>
+
+                <form method="post" asp-action="Create">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tytuł</label>
+                        <input type="text" name="Title" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Opis</label>
+                        <input type="text" name="Description" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Dodaj
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Filtruj zgłoszenia</h5>
+
+                <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            <option value="">Wszystkie statusy</option>
+
+                            @foreach (var status in Enum.GetValues<TicketStatus>())
+                            {
+                                <option value="@status" selected="@(selectedStatus == status.ToString() ? "selected" : null)">
+                                    @status
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        Filtruj
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        @if (!Model.Items.Any())
+        {
+            <div class="alert alert-info">
+                Brak zgłoszeń do wyświetlenia.
+            </div>
+        }
+        else
+        {
+            @foreach (var ticket in Model.Items)
+            {
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <a asp-action="Details"
+                                   asp-route-id="@ticket.Id"
+                                   class="text-primary fw-semibold text-decoration-none fs-5">
+                                    @ticket.Title
+                                </a>
+
+                                <div class="mt-2">
+                                    @if (ticket.Status == "New")
+                                    {
+                                        <span class="badge bg-success">New</span>
+                                    }
+                                    else if (ticket.Status == "InProgress")
+                                    {
+                                        <span class="badge bg-warning text-dark">InProgress</span>
+                                    }
+                                    else if (ticket.Status == "Closed")
+                                    {
+                                        <span class="badge bg-secondary">Closed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-dark">@ticket.Status</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details"
+                                   asp-route-id="@ticket.Id"
+                                   class="btn btn-sm btn-primary">
+                                    Otwórz
+                                </a>
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <form method="post" asp-action="Delete" asp-route-id="@ticket.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            Usuń
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        <nav class="mt-4">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-status="@currentStatus">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-page="2" asp-route-status="@currentStatus">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-page="3" asp-route-status="@currentStatus">3</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,7 +1,7 @@
-﻿@using UniDesk.Web.Models
-@model UniDesk.Web.Models.Ticket
+@using UniDesk.Web.Models
+@model UniDesk.Web.ViewModels.TicketEditViewModel
 
-<h1>Edytuj zgłoszenie</h1>
+<h1>Edytuj zgloszenie</h1>
 
 <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
     @Html.AntiForgeryToken()
@@ -11,7 +11,7 @@
     <div asp-validation-summary="All" style="color:red"></div>
 
     <div>
-        <label asp-for="Title">Tytuł:</label>
+        <label asp-for="Title">Tytul:</label>
         <input asp-for="Title" />
         <span asp-validation-for="Title" style="color:red"></span>
     </div>
@@ -39,7 +39,7 @@
 </form>
 
 <p>
-    <a asp-action="Details" asp-route-id="@Model.Id">Powrót do szczegółów</a>
+    <a asp-action="Details" asp-route-id="@Model.Id">Powrot do szczegolow</a>
 </p>
 
 @section Scripts {

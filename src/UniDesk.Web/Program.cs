@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITicketService, DbTicketService>();
 builder.Services.AddScoped<ITicketRepository, DbTicketRepository>();
+builder.Services.AddScoped<ITicketCommentService, DbTicketCommentService>();
 builder.Services.AddScoped<ISystemClock, SystemClock>();
 
 builder.Services.AddScoped<RequestTimingFilter>();
@@ -49,6 +50,9 @@ builder.Services.AddScoped<ValidationFilter>();
 
 builder.Services.AddDbContext<UniDeskDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<SeedDataOptions>(
+    builder.Configuration.GetSection("SeedData"));
 
 builder.Services.AddHealthChecks()
     .AddCheck(

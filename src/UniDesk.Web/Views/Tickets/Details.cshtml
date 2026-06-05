@@ -1,12 +1,63 @@
-﻿@model UniDesk.Web.Models.Ticket
+@model UniDesk.Web.ViewModels.TicketDetailsViewModel
 
-<h1>Szczegóły zgłoszenia</h1>
+<h1>Szczegoly zgloszenia</h1>
 
-<p><strong>Tytuł:</strong> @Model.Title</p>
+<p><strong>Tytul:</strong> @Model.Title</p>
 <p><strong>Opis:</strong> @Model.Description</p>
 <p><strong>Status:</strong> @Model.Status</p>
 <p><strong>Data:</strong> @Model.CreatedAt</p>
 
+<hr>
+
+<h2>Dyskusja</h2>
+
+@if (Model.Comments.Count == 0)
+{
+    <p>Brak komentarzy.</p>
+}
+else
+{
+    <ul>
+        @foreach (var comment in Model.Comments)
+        {
+            <li>
+                <p>@comment.Message</p>
+                <small>
+                    @comment.AuthorName,
+                    @comment.CreatedAt.ToLocalTime()
+                </small>
+            </li>
+        }
+    </ul>
+}
+
+<h3>Dodaj komentarz</h3>
+
+@if (TempData["CommentError"] != null)
+{
+    <p style="color:red">@TempData["CommentError"]</p>
+}
+
+<form method="post" asp-action="AddComment" asp-route-ticketId="@Model.Id">
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label asp-for="NewComment.Message">Tresc:</label>
+        <textarea asp-for="NewComment.Message"
+                  minlength="3"
+                  maxlength="1000"
+                  rows="4"></textarea>
+        <div>
+            <span asp-validation-for="NewComment.Message" style="color:red"></span>
+        </div>
+    </div>
+
+    <button type="submit">Dodaj komentarz</button>
+</form>
 
 <p><a asp-action="Edit" asp-route-id="@Model.Id">Edytuj</a></p>
-<a asp-action="Index">Powrót</a>
+<a asp-action="Index">Powrot</a>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

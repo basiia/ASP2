@@ -37,28 +37,7 @@ namespace UniDesk.Web.Services
 
 		public IQueryable<Ticket> GetAll(TicketQueryParameters queryParams)
 		{
-			IQueryable<Ticket> query = _context.Tickets;  
-
-			if (!string.IsNullOrEmpty(queryParams.Status))
-			{
-				if (Enum.TryParse<TicketStatus>(queryParams.Status, out var parsedStatus))
-				{
-					query = query.Where(t => t.Status == parsedStatus);
-				}
-			}
-
-			var allowedSorts = new List<string> { "Title", "Status", "CreatedAt" };
-			if (!string.IsNullOrEmpty(queryParams.SortBy) && allowedSorts.Contains(queryParams.SortBy))
-			{
-				query = queryParams.Desc
-					? query.OrderByDescending(x => EF.Property<object>(x, queryParams.SortBy))
-					: query.OrderBy(x => EF.Property<object>(x, queryParams.SortBy));
-			}
-
-			query = query.Skip((queryParams.Page - 1) * queryParams.PageSize)
-						 .Take(queryParams.PageSize);
-
-			return query; 
+			return _context.Tickets;
 		}
 
 		public List<Ticket> Search(string search)

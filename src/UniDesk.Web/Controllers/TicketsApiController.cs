@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UniDesk.Web.DTOs;
 using UniDesk.Web.Models;
 using UniDesk.Web.Services;
 
 namespace UniDesk.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Identity.Application,Identity.Bearer")]
     [ApiController]
     [Route("api/tickets")]
     [Produces("application/json")]
@@ -60,7 +62,9 @@ namespace UniDesk.Web.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            var dto = _ticketService.Create(request);
+            var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var ownerName = User.Identity?.Name;
+            var dto = _ticketService.Create(request, ownerId, ownerName);
 
             return CreatedAtAction(nameof(GetTicketById), new { id = dto.Id }, dto);
         }
@@ -102,6 +106,5 @@ namespace UniDesk.Web.Controllers
 
             return NoContent();
         }
-
     }
 }

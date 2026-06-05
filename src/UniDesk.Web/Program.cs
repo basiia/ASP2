@@ -14,6 +14,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Serilog;
 using Serilog.Formatting.Json;
 using System.Text.Json;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
+using UniDesk.Web.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,9 +44,11 @@ builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ITicketService, DbTicketService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<ITicketRepository, DbTicketRepository>();
 builder.Services.AddScoped<ITicketCommentService, DbTicketCommentService>();
+builder.Services.AddSingleton<IMarkdownFormatter, SimpleMarkdownFormatter>();
+builder.Services.AddSingleton<IAuthorizationHandler, TicketAccessHandler>();
 builder.Services.AddScoped<ISystemClock, SystemClock>();
 
 builder.Services.AddScoped<RequestTimingFilter>();
@@ -53,6 +59,23 @@ builder.Services.AddDbContext<UniDeskDbContext>(options =>
 
 builder.Services.Configure<SeedDataOptions>(
     builder.Configuration.GetSection("SeedData"));
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddPolicy("comments", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.User.Identity?.Name
+            ?? context.Connection.RemoteIpAddress?.ToString()
+            ?? "anonymous",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
 
 builder.Services.AddHealthChecks()
     .AddCheck(
@@ -116,6 +139,11 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("CanAccessTicket", policy =>
+    {
+        policy.Requirements.Add(new TicketAccessRequirement());
+    });
+
     options.AddPolicy("BearerUser", policy =>
     {
         policy.AddAuthenticationSchemes(IdentityConstants.BearerScheme);
@@ -185,6 +213,7 @@ app.UseSerilogRequestLogging(options =>
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())

@@ -10,6 +10,10 @@ namespace UniDesk.Web.Data
 
         public string DomainUserPassword { get; set; } = IdentitySeeder.DomainUserPassword;
 
+        public string OutsiderEmail { get; set; } = IdentitySeeder.OutsiderEmail;
+
+        public string OutsiderPassword { get; set; } = IdentitySeeder.OutsiderPassword;
+
         public bool CreateDemoTickets { get; set; } = true;
     }
 }

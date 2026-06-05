@@ -16,6 +16,9 @@ namespace UniDesk.Web.Data
         public const string DomainUserEmail = "employee@top-uni.edu.pl";
         public const string DomainUserPassword = "Employee123!";
 
+        public const string OutsiderEmail = "outsider@unidesk.local";
+        public const string OutsiderPassword = "Outsider123!";
+
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
@@ -46,6 +49,14 @@ namespace UniDesk.Web.Data
 
             await EnsureClaimAsync(userManager, domainUser, "EmployeeId", "EMP-TOP-001");
 
+            var outsider = await EnsureUserAsync(
+                userManager,
+                options.OutsiderEmail,
+                options.OutsiderPassword,
+                "Outside Company");
+
+            await EnsureClaimAsync(userManager, outsider, "EmployeeId", "EMP-OUT-001");
+
             if (options.CreateDemoTickets)
             {
                 await EnsureDemoTicketsAsync(context, admin, domainUser);
@@ -64,7 +75,7 @@ namespace UniDesk.Web.Data
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException(
-                    "Nie udało się utworzyć roli: " +
+                    "Could not create role: " +
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
@@ -101,7 +112,7 @@ namespace UniDesk.Web.Data
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException(
-                    "Nie udało się utworzyć użytkownika: " +
+                    "Could not create user: " +
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
@@ -123,7 +134,7 @@ namespace UniDesk.Web.Data
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException(
-                    "Nie udało się przypisać roli: " +
+                    "Could not add role: " +
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
@@ -146,7 +157,7 @@ namespace UniDesk.Web.Data
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException(
-                    "Nie udało się dodać claimu: " +
+                    "Could not add claim: " +
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
@@ -156,11 +167,6 @@ namespace UniDesk.Web.Data
             ApplicationUser admin,
             ApplicationUser domainUser)
         {
-            if (await context.TicketComments.AnyAsync())
-            {
-                return;
-            }
-
             var tickets = await context.Tickets
                 .OrderBy(t => t.Id)
                 .Take(2)
@@ -171,19 +177,31 @@ namespace UniDesk.Web.Data
                 tickets.Add(new Ticket
                 {
                     Title = "Problem z logowaniem",
-                    Description = "Student nie może zalogować się do systemu.",
-                    Status = TicketStatus.Open
+                    Description = "Student nie moze zalogowac sie do systemu.",
+                    Status = TicketStatus.New,
+                    OwnerId = domainUser.Id,
+                    OwnerName = domainUser.Email
                 });
 
                 tickets.Add(new Ticket
                 {
-                    Title = "Brak dostępu do materiałów",
-                    Description = "Materiały z kursu nie są widoczne po wejściu na stronę.",
-                    Status = TicketStatus.InProgress
+                    Title = "Brak dostepu do materialow",
+                    Description = "Materialy z kursu nie sa widoczne po wejscu na strone.",
+                    Status = TicketStatus.InProgress,
+                    OwnerId = domainUser.Id,
+                    OwnerName = domainUser.Email
                 });
 
                 context.Tickets.AddRange(tickets);
                 await context.SaveChangesAsync();
+            }
+
+            await EnsureTicketOwnersAsync(context, domainUser);
+
+            if (await context.TicketComments.AnyAsync())
+            {
+                await EnsureStretchDemoCommentAsync(context, admin, tickets[0]);
+                return;
             }
 
             var firstTicket = tickets[0];
@@ -191,9 +209,11 @@ namespace UniDesk.Web.Data
                 ? tickets[1]
                 : new Ticket
                 {
-                    Title = "Brak dostępu do materiałów",
-                    Description = "Materiały z kursu nie są widoczne po wejściu na stronę.",
-                    Status = TicketStatus.InProgress
+                    Title = "Brak dostepu do materialow",
+                    Description = "Materialy z kursu nie sa widoczne po wejscu na strone.",
+                    Status = TicketStatus.InProgress,
+                    OwnerId = domainUser.Id,
+                    OwnerName = domainUser.Email
                 };
 
             if (secondTicket.Id == 0)
@@ -208,7 +228,7 @@ namespace UniDesk.Web.Data
                     TicketId = firstTicket.Id,
                     AuthorId = domainUser.Id,
                     AuthorName = domainUser.Email ?? DomainUserEmail,
-                    Message = "Dzień dobry, problem pojawia się od rana.",
+                    Message = "**Dzien dobry**, problem pojawia sie od rana.",
                     CreatedAt = DateTime.UtcNow.AddMinutes(-20)
                 },
                 new TicketComment
@@ -216,7 +236,7 @@ namespace UniDesk.Web.Data
                     TicketId = firstTicket.Id,
                     AuthorId = admin.Id,
                     AuthorName = admin.Email ?? AdminEmail,
-                    Message = "Sprawdzam konto i historię logowania.",
+                    Message = "Sprawdzam konto. Kod bledu: `LOGIN-401`.",
                     CreatedAt = DateTime.UtcNow.AddMinutes(-10)
                 },
                 new TicketComment
@@ -224,9 +244,56 @@ namespace UniDesk.Web.Data
                     TicketId = secondTicket.Id,
                     AuthorId = domainUser.Id,
                     AuthorName = domainUser.Email ?? DomainUserEmail,
-                    Message = "Po odświeżeniu strony nadal nie widzę plików.",
+                    Message = "Test XSS: <script>alert('xss')</script>",
                     CreatedAt = DateTime.UtcNow.AddMinutes(-5)
                 });
+
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task EnsureStretchDemoCommentAsync(
+            UniDeskDbContext context,
+            ApplicationUser admin,
+            Ticket ticket)
+        {
+            var exists = await context.TicketComments
+                .AnyAsync(c => c.Message.Contains("Stretch demo"));
+
+            if (exists)
+            {
+                return;
+            }
+
+            context.TicketComments.Add(new TicketComment
+            {
+                TicketId = ticket.Id,
+                AuthorId = admin.Id,
+                AuthorName = admin.Email ?? AdminEmail,
+                Message = "Stretch demo: **bold text**, `code`, <script>alert('xss')</script>",
+                CreatedAt = DateTime.UtcNow
+            });
+
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task EnsureTicketOwnersAsync(
+            UniDeskDbContext context,
+            ApplicationUser domainUser)
+        {
+            var ticketsWithoutOwner = await context.Tickets
+                .Where(t => t.OwnerId == null)
+                .ToListAsync();
+
+            if (ticketsWithoutOwner.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var ticket in ticketsWithoutOwner)
+            {
+                ticket.OwnerId = domainUser.Id;
+                ticket.OwnerName = domainUser.Email;
+            }
 
             await context.SaveChangesAsync();
         }

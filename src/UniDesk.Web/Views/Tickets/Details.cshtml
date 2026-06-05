@@ -5,57 +5,63 @@
 <p><strong>Tytul:</strong> @Model.Title</p>
 <p><strong>Opis:</strong> @Model.Description</p>
 <p><strong>Status:</strong> @Model.Status</p>
+<p><strong>Autor:</strong> @(Model.OwnerName ?? "Brak danych")</p>
 <p><strong>Data:</strong> @Model.CreatedAt</p>
 
 <hr>
 
 <h2>Dyskusja</h2>
 
-@if (Model.Comments.Count == 0)
+@if (!Model.CanUseDiscussion)
 {
-    <p>Brak komentarzy.</p>
+    <div class="alert alert-warning">
+        Nie masz dostepu do dyskusji tej sprawy.
+    </div>
 }
 else
 {
-    <ul>
-        @foreach (var comment in Model.Comments)
-        {
-            <li>
-                <p>@comment.Message</p>
-                <small>
-                    @comment.AuthorName,
-                    @comment.CreatedAt.ToLocalTime()
-                </small>
-            </li>
-        }
-    </ul>
-}
+    @if (Model.Comments.Count == 0)
+    {
+        <p>Brak komentarzy.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var comment in Model.Comments)
+            {
+                <li>
+                    <div>@Html.Raw(comment.MessageHtml)</div>
+                    <small>
+                        @comment.AuthorName,
+                        @comment.CreatedAt.ToLocalTime()
+                    </small>
+                </li>
+            }
+        </ul>
+    }
 
-<h3>Dodaj komentarz</h3>
+    <h3>Dodaj komentarz</h3>
 
-@if (TempData["CommentError"] != null)
-{
-    <p style="color:red">@TempData["CommentError"]</p>
-}
+    <form method="post" asp-action="AddComment" asp-route-ticketId="@Model.Id">
+        @Html.AntiForgeryToken()
 
-<form method="post" asp-action="AddComment" asp-route-ticketId="@Model.Id">
-    @Html.AntiForgeryToken()
-
-    <div>
-        <label asp-for="NewComment.Message">Tresc:</label>
-        <textarea asp-for="NewComment.Message"
-                  minlength="3"
-                  maxlength="1000"
-                  rows="4"></textarea>
         <div>
-            <span asp-validation-for="NewComment.Message" style="color:red"></span>
+            <label asp-for="NewComment.Message">Tresc Markdown:</label>
+            <textarea asp-for="NewComment.Message"
+                      minlength="3"
+                      maxlength="1000"
+                      rows="5"></textarea>
+            <div>
+                <span asp-validation-for="NewComment.Message" style="color:red"></span>
+            </div>
         </div>
-    </div>
 
-    <button type="submit">Dodaj komentarz</button>
-</form>
+        <button type="submit">Dodaj komentarz</button>
+    </form>
 
-<p><a asp-action="Edit" asp-route-id="@Model.Id">Edytuj</a></p>
+    <p><a asp-action="Edit" asp-route-id="@Model.Id">Edytuj</a></p>
+}
+
 <a asp-action="Index">Powrot</a>
 
 @section Scripts {

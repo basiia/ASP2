@@ -22,5 +22,13 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 
 		builder.Property(t => t.UpdatedAt)
 			.IsRequired();  
+
+		builder.Property(t => t.OwnerName)
+			.HasMaxLength(256);
+
+		builder.HasOne(t => t.Owner)
+			.WithMany()
+			.HasForeignKey(t => t.OwnerId)
+			.OnDelete(DeleteBehavior.SetNull);
 	}
 }

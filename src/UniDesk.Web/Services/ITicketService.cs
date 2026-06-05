@@ -12,7 +12,7 @@ namespace UniDesk.Web.Services
         void Add(Ticket ticket);
         void Update(Ticket ticket);
 
-        TicketReadDto Create(CreateTicketRequest request);
+        TicketReadDto Create(CreateTicketRequest request, string? ownerId = null, string? ownerName = null);
         TicketReadDto Update(int id, UpdateTicketRequest request);
         bool Delete(int id);
     }

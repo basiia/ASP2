@@ -14,6 +14,10 @@ namespace UniDesk.Web.ViewModels
 
         public DateTime CreatedAt { get; set; }
 
+        public string? OwnerName { get; set; }
+
+        public bool CanUseDiscussion { get; set; }
+
         public List<TicketCommentDto> Comments { get; set; } = new();
 
         public CreateTicketCommentRequest NewComment { get; set; } = new();

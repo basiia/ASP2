@@ -9,27 +9,36 @@ namespace UniDesk.Web.Services
     {
         private readonly UniDeskDbContext _context;
         private readonly ISystemClock _systemClock;
+        private readonly IMarkdownFormatter _markdownFormatter;
 
-        public DbTicketCommentService(UniDeskDbContext context, ISystemClock systemClock)
+        public DbTicketCommentService(
+            UniDeskDbContext context,
+            ISystemClock systemClock,
+            IMarkdownFormatter markdownFormatter)
         {
             _context = context;
             _systemClock = systemClock;
+            _markdownFormatter = markdownFormatter;
         }
 
         public async Task<List<TicketCommentDto>> GetForTicketAsync(int ticketId)
         {
-            return await _context.TicketComments
+            var comments = await _context.TicketComments
                 .Where(c => c.TicketId == ticketId)
                 .OrderBy(c => c.CreatedAt)
+                .ToListAsync();
+
+            return comments
                 .Select(c => new TicketCommentDto
                 {
                     Id = c.Id,
                     TicketId = c.TicketId,
                     AuthorName = c.AuthorName,
                     Message = c.Message,
+                    MessageHtml = _markdownFormatter.ToSafeHtml(c.Message),
                     CreatedAt = c.CreatedAt
                 })
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<TicketCommentDto> CreateAsync(
@@ -75,6 +84,7 @@ namespace UniDesk.Web.Services
                 TicketId = comment.TicketId,
                 AuthorName = comment.AuthorName,
                 Message = comment.Message,
+                MessageHtml = _markdownFormatter.ToSafeHtml(comment.Message),
                 CreatedAt = comment.CreatedAt
             };
         }

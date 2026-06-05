@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using UniDesk.Web.DTOs;
+using UniDesk.Web.Models;
 using UniDesk.Web.Services;
 using UniDesk.Web.ViewModels;
 
@@ -12,13 +14,16 @@ namespace UniDesk.Web.Controllers
     {
         private readonly ITicketService _ticketService;
         private readonly ITicketCommentService _ticketCommentService;
+        private readonly IAuthorizationService _authorizationService;
 
         public TicketsController(
             ITicketService ticketService,
-            ITicketCommentService ticketCommentService)
+            ITicketCommentService ticketCommentService,
+            IAuthorizationService authorizationService)
         {
             _ticketService = ticketService;
             _ticketCommentService = ticketCommentService;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index(TicketQueryParameters query)
@@ -36,13 +41,15 @@ namespace UniDesk.Web.Controllers
                 return NotFound();
             }
 
-            var model = await BuildDetailsModelAsync(ticket.Id);
+            var canUseDiscussion = await CanUseDiscussionAsync(ticket);
+            var model = await BuildDetailsModelAsync(ticket, canUseDiscussion);
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("comments")]
         public async Task<IActionResult> AddComment(
             int ticketId,
             [Bind(Prefix = "NewComment")] CreateTicketCommentRequest request)
@@ -54,9 +61,14 @@ namespace UniDesk.Web.Controllers
                 return NotFound();
             }
 
+            if (!await CanUseDiscussionAsync(ticket))
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
-                var model = await BuildDetailsModelAsync(ticketId);
+                var model = await BuildDetailsModelAsync(ticket, canUseDiscussion: true);
                 model.NewComment = request;
 
                 return View(nameof(Details), model);
@@ -86,18 +98,31 @@ namespace UniDesk.Web.Controllers
                 return View("Index", result);
             }
 
-            _ticketService.Create(request);
+            var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (ownerId == null)
+            {
+                return Challenge();
+            }
+
+            var ownerName = User.Identity?.Name ?? "Uzytkownik";
+            _ticketService.Create(request, ownerId, ownerName);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var ticket = _ticketService.GetById(id);
 
             if (ticket == null)
             {
                 return NotFound();
+            }
+
+            if (!await CanUseDiscussionAsync(ticket))
+            {
+                return Forbid();
             }
 
             var model = new TicketEditViewModel
@@ -113,11 +138,23 @@ namespace UniDesk.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, TicketEditViewModel model)
+        public async Task<IActionResult> Edit(int id, TicketEditViewModel model)
         {
             if (id != model.Id)
             {
                 return NotFound();
+            }
+
+            var ticket = _ticketService.GetById(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            if (!await CanUseDiscussionAsync(ticket))
+            {
+                return Forbid();
             }
 
             if (!ModelState.IsValid)
@@ -154,14 +191,23 @@ namespace UniDesk.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<TicketDetailsViewModel> BuildDetailsModelAsync(int ticketId)
+        private async Task<bool> CanUseDiscussionAsync(Ticket ticket)
         {
-            var ticket = _ticketService.GetById(ticketId);
+            var result = await _authorizationService.AuthorizeAsync(
+                User,
+                ticket,
+                "CanAccessTicket");
 
-            if (ticket == null)
-            {
-                throw new InvalidOperationException("Ticket not found.");
-            }
+            return result.Succeeded;
+        }
+
+        private async Task<TicketDetailsViewModel> BuildDetailsModelAsync(
+            Ticket ticket,
+            bool canUseDiscussion)
+        {
+            var comments = canUseDiscussion
+                ? await _ticketCommentService.GetForTicketAsync(ticket.Id)
+                : new List<TicketCommentDto>();
 
             return new TicketDetailsViewModel
             {
@@ -170,7 +216,9 @@ namespace UniDesk.Web.Controllers
                 Description = ticket.Description,
                 Status = ticket.Status.ToString(),
                 CreatedAt = ticket.CreatedAt,
-                Comments = await _ticketCommentService.GetForTicketAsync(ticketId)
+                OwnerName = ticket.OwnerName,
+                CanUseDiscussion = canUseDiscussion,
+                Comments = comments
             };
         }
     }

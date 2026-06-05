@@ -10,6 +10,8 @@ namespace UniDesk.Web.DTOs
 
         public string Message { get; set; } = string.Empty;
 
+        public string MessageHtml { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; }
     }
 }

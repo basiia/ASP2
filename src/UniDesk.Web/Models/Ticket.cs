@@ -5,7 +5,7 @@ namespace UniDesk.Web.Models
 {
 	public enum TicketStatus
 	{
-		Open,
+		New,
 		InProgress,
 		Closed
 	}
@@ -42,6 +42,13 @@ namespace UniDesk.Web.Models
 		public DateTime CreatedAt { get; set; }
 
 		public DateTime UpdatedAt { get; set; }
+
+		public string? OwnerId { get; set; }
+
+		[StringLength(256)]
+		public string? OwnerName { get; set; }
+
+		public ApplicationUser? Owner { get; set; }
 
 		public ICollection<TicketComment> Comments { get; set; } = new List<TicketComment>();
 	}

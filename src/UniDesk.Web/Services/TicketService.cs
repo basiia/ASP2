@@ -6,18 +6,18 @@ using System.Diagnostics;
 
 namespace UniDesk.Web.Services
 {
-	public class DbTicketService : ITicketService
+	public class TicketService : ITicketService
 	{
         private readonly ITicketRepository _ticketRepository;
         private readonly ISystemClock _systemClock;
-        private readonly ILogger<DbTicketService> _logger;
+        private readonly ILogger<TicketService> _logger;
 
         private const long SlowDatabaseOperationThresholdMs = 50;
 
-        public DbTicketService(
+        public TicketService(
             ITicketRepository ticketRepository,
             ISystemClock systemClock,
-            ILogger<DbTicketService> logger)
+            ILogger<TicketService> logger)
         {
             _ticketRepository = ticketRepository;
             _systemClock = systemClock;
@@ -53,7 +53,9 @@ namespace UniDesk.Web.Services
 			}
 			else
 			{
-				query = query.OrderBy(x => x.Id);
+				query = query
+                    .OrderByDescending(x => x.CreatedAt)
+                    .ThenByDescending(x => x.Id);
 			}
 
 			query = query
@@ -92,7 +94,7 @@ namespace UniDesk.Web.Services
 
             if (ticket.Status == 0)
             {
-                ticket.Status = TicketStatus.Open;
+                ticket.Status = TicketStatus.New;
             }
 
             var stopwatch = Stopwatch.StartNew();
@@ -153,13 +155,15 @@ namespace UniDesk.Web.Services
 			_ticketRepository.Update(ticket);
 		}
 
-        public TicketReadDto Create(CreateTicketRequest request)
+        public TicketReadDto Create(CreateTicketRequest request, string? ownerId = null, string? ownerName = null)
         {
             var ticket = new Ticket(_systemClock)
             {
                 Title = request.Title,
                 Description = request.Description,
-                Status = TicketStatus.Open
+                Status = TicketStatus.New,
+                OwnerId = ownerId,
+                OwnerName = ownerName
             };
 
             Add(ticket);

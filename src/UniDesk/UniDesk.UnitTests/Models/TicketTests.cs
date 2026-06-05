@@ -12,17 +12,17 @@ namespace UniDesk.UnitTests.Models
 	public class TicketTests
 	{
 		private readonly Mock<ITicketRepository> _mockRepo;
-		private readonly DbTicketService _service;
+		private readonly TicketService _service;
 		private readonly ISystemClock _fakeClock;
 
 		public TicketTests()
 		{
 			_mockRepo = new Mock<ITicketRepository>();
 			_fakeClock = new FakeClock();
-            _service = new DbTicketService(
+            _service = new TicketService(
                 _mockRepo.Object,
                 _fakeClock,
-                NullLogger<DbTicketService>.Instance);
+                NullLogger<TicketService>.Instance);
         }
 
 		[Fact]
@@ -38,7 +38,7 @@ namespace UniDesk.UnitTests.Models
 		}
 
 		[Fact]
-		public void Ticket_ShouldHaveStatusOpen_WhenCreated()
+		public void Ticket_ShouldHaveStatusNew_WhenCreated()
 		{
 			var ticket = new Ticket(_fakeClock)
 			{
@@ -46,7 +46,7 @@ namespace UniDesk.UnitTests.Models
 				Description = "Sample Description"
 			};
 
-			Assert.Equal(TicketStatus.Open, ticket.Status);
+			Assert.Equal(TicketStatus.New, ticket.Status);
 		}
 
 		[Fact]

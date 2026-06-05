@@ -19,18 +19,18 @@ namespace UniDesk.UnitTests.Services
 			{
 				Id = 1,
 				Title = "Sample Title",
-				Status = TicketStatus.Open  // Устанавливаем статус "Open"
+				Status = TicketStatus.New
 			};
 
-			var ticketMapper = new TicketMapper();  // Используем наш маппер
+			var ticketMapper = new TicketMapper();
 
 			// Act
-			var dto = ticketMapper.MapTicketToDto(ticket);  // Маппим Ticket в TicketReadDto
+			var dto = ticketMapper.MapTicketToDto(ticket);
 
 			// Assert
-			Assert.Equal(ticket.Id, dto.Id);  // Проверка, что ID правильный
-			Assert.Equal(ticket.Title, dto.Title);  // Проверка, что Title правильный
-			Assert.Equal(ticket.Status.ToString(), dto.Status);  // Проверка, что статус преобразован в строку
+			Assert.Equal(ticket.Id, dto.Id);
+			Assert.Equal(ticket.Title, dto.Title);
+			Assert.Equal(ticket.Status.ToString(), dto.Status);
 		}
 	}
 }

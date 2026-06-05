@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,113 +9,122 @@ namespace UniDesk.IntegrationTests;
 
 public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
-	private readonly HttpClient _client;
+    private readonly HttpClient _client;
 
-	public TicketsApiIntegrationTests(WebApplicationFactory<Program> factory)
-	{
-		_client = factory.CreateClient();
-	}
+    public TicketsApiIntegrationTests(WebApplicationFactory<Program> factory)
+    {
+        _client = factory.CreateClient();
+    }
 
-	[Fact]
-	public async Task GetTickets_ShouldReturnOkAndPagedResult()
-	{
-		var response = await _client.GetAsync("/api/tickets");
+    [Fact]
+    public async Task GetTickets_ShouldReturnOkAndPagedResult()
+    {
+        await TestAuthHelper.LoginAsEmployeeAsync(_client);
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var response = await _client.GetAsync("/api/tickets");
 
-		var result = await response.Content.ReadFromJsonAsync<PagedResult<TicketListDto>>();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-		Assert.NotNull(result);
-		Assert.NotNull(result!.Items);
-	}
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TicketListDto>>();
 
-	[Fact]
-	public async Task CreateTicket_ShouldReturnCreated()
-	{
-		var request = new CreateTicketRequest
-		{
-			Title = "Test ticket",
-			Description = "Test description"
-		};
+        Assert.NotNull(result);
+        Assert.NotNull(result!.Items);
+    }
 
-		var response = await _client.PostAsJsonAsync("/api/tickets", request);
+    [Fact]
+    public async Task CreateTicket_ShouldReturnCreated()
+    {
+        await TestAuthHelper.LoginAsEmployeeAsync(_client);
 
-		Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var request = new CreateTicketRequest
+        {
+            Title = "Test ticket",
+            Description = "Test description"
+        };
 
-		var created = await response.Content.ReadFromJsonAsync<TicketReadDto>();
+        var response = await _client.PostAsJsonAsync("/api/tickets", request);
 
-		Assert.NotNull(created);
-		Assert.Equal("Test ticket", created!.Title);
-		Assert.Equal("Open", created.Status);
-	}
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-	[Fact]
-	public async Task CreateTicket_ShouldReturnValidationProblemDetails_WhenTitleIsEmpty()
-	{
-		var request = new CreateTicketRequest
-		{
-			Title = "",
-			Description = "Test description"
-		};
+        var created = await response.Content.ReadFromJsonAsync<TicketReadDto>();
 
-		var response = await _client.PostAsJsonAsync("/api/tickets", request);
+        Assert.NotNull(created);
+        Assert.Equal("Test ticket", created!.Title);
+        Assert.Equal("New", created.Status);
+    }
 
-		Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    [Fact]
+    public async Task CreateTicket_ShouldReturnValidationProblemDetails_WhenTitleIsEmpty()
+    {
+        await TestAuthHelper.LoginAsEmployeeAsync(_client);
 
-		var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+        var request = new CreateTicketRequest
+        {
+            Title = "",
+            Description = "Test description"
+        };
 
-		Assert.NotNull(problem);
-		Assert.Equal(400, problem!.Status);
-		Assert.False(string.IsNullOrWhiteSpace(problem.Title));
-		Assert.True(problem.Errors.ContainsKey("Title"));
-	}
+        var response = await _client.PostAsJsonAsync("/api/tickets", request);
 
-	[Fact]
-	public async Task GetTicketById_ShouldReturnNotFound()
-	{
-		var response = await _client.GetAsync("/api/tickets/9999");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-		Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-	}
+        var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
 
-	[Fact]
-	public async Task UpdateStatus_ShouldReturnNoContent()
-	{
-		var createRequest = new CreateTicketRequest
-		{
-			Title = "Test ticket",
-			Description = "Test description"
-		};
+        Assert.NotNull(problem);
+        Assert.Equal(400, problem!.Status);
+        Assert.False(string.IsNullOrWhiteSpace(problem.Title));
+        Assert.True(problem.Errors.ContainsKey("Title"));
+    }
 
-		var createResponse = await _client.PostAsJsonAsync("/api/tickets", createRequest);
-		var created = await createResponse.Content.ReadFromJsonAsync<TicketReadDto>();
+    [Fact]
+    public async Task GetTicketById_ShouldReturnNotFound()
+    {
+        await TestAuthHelper.LoginAsEmployeeAsync(_client);
 
-		Assert.NotNull(created);
+        var response = await _client.GetAsync("/api/tickets/9999");
 
-		var updateRequest = new UpdateTicketStatusRequest
-		{
-			Status = 2
-		};
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 
-		var response = await _client.PatchAsJsonAsync(
-			$"/api/tickets/{created!.Id}/status",
-			updateRequest
-		);
+    [Fact]
+    public async Task UpdateStatus_ShouldReturnNoContent()
+    {
+        await TestAuthHelper.LoginAsEmployeeAsync(_client);
 
-		Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-	}
+        var createRequest = new CreateTicketRequest
+        {
+            Title = "Test ticket",
+            Description = "Test description"
+        };
 
-	[Fact]
-	public async Task SwaggerDocument_ShouldBeAvailable()
-	{
-		var response = await _client.GetAsync("/swagger/v1/swagger.json");
+        var createResponse = await _client.PostAsJsonAsync("/api/tickets", createRequest);
+        var created = await createResponse.Content.ReadFromJsonAsync<TicketReadDto>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(created);
 
-		var content = await response.Content.ReadAsStringAsync();
+        var updateRequest = new UpdateTicketStatusRequest
+        {
+            Status = 2
+        };
 
-		Assert.False(string.IsNullOrWhiteSpace(content));
-		Assert.Contains("openapi", content.ToLower());
-		Assert.Contains("/api/tickets", content);
-	}
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/tickets/{created!.Id}/status",
+            updateRequest);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task SwaggerDocument_ShouldBeAvailable()
+    {
+        var response = await _client.GetAsync("/swagger/v1/swagger.json");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        Assert.False(string.IsNullOrWhiteSpace(content));
+        Assert.Contains("openapi", content.ToLower());
+        Assert.Contains("/api/tickets", content);
+    }
 }

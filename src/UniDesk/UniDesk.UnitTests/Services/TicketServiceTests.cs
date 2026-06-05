@@ -9,21 +9,21 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace UniDesk.UnitTests.Services
 {
-	public class DbTicketServiceTests
+	public class TicketServiceTests
 	{
 		private readonly Mock<ITicketRepository> _mockRepo;
-		private readonly DbTicketService _service;
+		private readonly TicketService _service;
 		private readonly ISystemClock _fakeClock;
 
-        public DbTicketServiceTests()
+        public TicketServiceTests()
         {
             _mockRepo = new Mock<ITicketRepository>();
             _fakeClock = new FakeClock();
 
-            _service = new DbTicketService(
+            _service = new TicketService(
                 _mockRepo.Object,
                 _fakeClock,
-                NullLogger<DbTicketService>.Instance);
+                NullLogger<TicketService>.Instance);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace UniDesk.UnitTests.Services
 			{
 				Title = "New Ticket",
 				Description = "Sample Description",
-				Status = TicketStatus.Open
+				Status = TicketStatus.New
 			};
 
 			_service.Add(ticket);
@@ -91,8 +91,8 @@ namespace UniDesk.UnitTests.Services
 			var result = _service.GetAll(queryParams);
 
 			Assert.Equal(10, result.Items.Count);  
-			Assert.Equal("Ticket 1", result.Items[0].Title); 
-			Assert.Equal("Ticket 10", result.Items[9].Title);  
+			Assert.Equal("Ticket 15", result.Items[0].Title); 
+			Assert.Equal("Ticket 6", result.Items[9].Title);  
 		}
 	}
 }

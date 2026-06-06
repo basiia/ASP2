@@ -94,6 +94,9 @@ namespace UniDesk.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewData["CreateTitle"] = request.Title;
+                ViewData["CreateDescription"] = request.Description;
+
                 var result = _ticketService.GetAll(new TicketQueryParameters());
                 return View("Index", result);
             }

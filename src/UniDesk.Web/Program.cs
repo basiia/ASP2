@@ -55,7 +55,12 @@ builder.Services.AddScoped<RequestTimingFilter>();
 builder.Services.AddScoped<ValidationFilter>();
 
 builder.Services.AddDbContext<UniDeskDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options
+        .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .LogTo(
+            Console.WriteLine,
+            new[] { DbLoggerCategory.Database.Command.Name },
+            LogLevel.Information));
 
 builder.Services.Configure<SeedDataOptions>(
     builder.Configuration.GetSection("SeedData"));

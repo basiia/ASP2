@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using UniDesk.Web.Services;
 
 namespace UniDesk.Web.Models
@@ -14,11 +15,15 @@ namespace UniDesk.Web.Models
 	{
 		private readonly ISystemClock? _systemClock;
 
+		[SetsRequiredMembers]
 		public Ticket()
 		{
+			Title = string.Empty;
+			Description = string.Empty;
 			CreatedAt = DateTime.UtcNow;
 		}
 
+		[SetsRequiredMembers]
 		public Ticket(ISystemClock systemClock)
 		{
 			_systemClock = systemClock;
@@ -31,11 +36,11 @@ namespace UniDesk.Web.Models
 
 		[Required(ErrorMessage = "Tytuł jest wymagany")]
 		[StringLength(100)]
-		public string Title { get; set; } = string.Empty;
+		public required string Title { get; set; }
 
 		[Required(ErrorMessage = "Opis jest wymagany")]
 		[StringLength(500)]
-		public string Description { get; set; } = string.Empty;
+		public required string Description { get; set; }
 
 		public TicketStatus Status { get; set; }
 

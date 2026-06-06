@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using UniDesk.Web.Exceptions;
 
 namespace UniDesk.Web.Middleware
@@ -42,6 +43,26 @@ namespace UniDesk.Web.Middleware
 
                 await context.Response.WriteAsJsonAsync(problem);
             }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Database update rejected during request {Path}",
+                    context.Request.Path.Value);
+
+                var problem = new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Niepoprawne dane zapisu",
+                    Detail = "Nie mozna zapisac danych z powodu naruszenia zasad bazy danych.",
+                    Instance = context.Request.Path
+                };
+
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "application/problem+json";
+
+                await context.Response.WriteAsJsonAsync(problem);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(
@@ -52,8 +73,8 @@ namespace UniDesk.Web.Middleware
                 var problem = new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Wystąpił błąd serwera",
-                    Detail = "Wystąpił nieoczekiwany błąd aplikacji.",
+                    Title = "Wystapil blad serwera",
+                    Detail = "Wystapil nieoczekiwany blad aplikacji.",
                     Instance = context.Request.Path
                 };
 

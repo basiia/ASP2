@@ -4,8 +4,11 @@
 
 @{
     ViewData["Title"] = "Lista zgłoszeń";
+    var search = Context.Request.Query["search"].ToString();
     var selectedStatus = Context.Request.Query["status"].ToString();
     var currentStatus = Context.Request.Query["status"].ToString();
+    var createTitle = ViewData["CreateTitle"] as string;
+    var createDescription = ViewData["CreateDescription"] as string;
 }
 
 <div class="mb-4">
@@ -26,12 +29,18 @@
 
                     <div class="mb-3">
                         <label class="form-label">Tytuł</label>
-                        <input type="text" name="Title" class="form-control" />
+                        <input type="text"
+                               name="Title"
+                               value="@createTitle"
+                               class="form-control" />
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Opis</label>
-                        <input type="text" name="Description" class="form-control" />
+                        <input type="text"
+                               name="Description"
+                               value="@createDescription"
+                               class="form-control" />
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">
@@ -46,6 +55,14 @@
                 <h5 class="card-title mb-3">Filtruj zgłoszenia</h5>
 
                 <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label">Tytuł</label>
+                        <input type="text"
+                               name="search"
+                               value="@search"
+                               class="form-control" />
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select">
@@ -90,21 +107,20 @@
                                 </a>
 
                                 <div class="mt-2">
-                                    @if (ticket.Status == "New")
+                                    @switch (ticket.Status)
                                     {
-                                        <span class="badge bg-success">New</span>
-                                    }
-                                    else if (ticket.Status == "InProgress")
-                                    {
-                                        <span class="badge bg-warning text-dark">InProgress</span>
-                                    }
-                                    else if (ticket.Status == "Closed")
-                                    {
-                                        <span class="badge bg-secondary">Closed</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-light text-dark">@ticket.Status</span>
+                                        case "New":
+                                            <span class="badge bg-success">New</span>
+                                            break;
+                                        case "InProgress":
+                                            <span class="badge bg-warning text-dark">InProgress</span>
+                                            break;
+                                        case "Closed":
+                                            <span class="badge bg-secondary">Closed</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-light text-dark">@ticket.Status</span>
+                                            break;
                                     }
                                 </div>
                             </div>
@@ -135,13 +151,13 @@
         <nav class="mt-4">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-status="@currentStatus">1</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-status="@currentStatus" asp-route-search="@search">1</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-page="2" asp-route-status="@currentStatus">2</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="2" asp-route-status="@currentStatus" asp-route-search="@search">2</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-page="3" asp-route-status="@currentStatus">3</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="3" asp-route-status="@currentStatus" asp-route-search="@search">3</a>
                 </li>
             </ul>
         </nav>

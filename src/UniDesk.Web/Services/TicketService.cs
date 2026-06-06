@@ -24,9 +24,14 @@ namespace UniDesk.Web.Services
             _logger = logger;
         }
 
-        public PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams)
+		public PagedResult<TicketListDto> GetAll(TicketQueryParameters queryParams)
 		{
 			IQueryable<Ticket> query = _ticketRepository.GetAll(queryParams);
+
+			if (!string.IsNullOrWhiteSpace(queryParams.Search))
+			{
+				query = query.Where(t => t.Title.Contains(queryParams.Search));
+			}
 
 			if (!string.IsNullOrEmpty(queryParams.Status))
 			{

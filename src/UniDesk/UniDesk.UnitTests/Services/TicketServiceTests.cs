@@ -94,5 +94,42 @@ namespace UniDesk.UnitTests.Services
 			Assert.Equal("Ticket 15", result.Items[0].Title); 
 			Assert.Equal("Ticket 6", result.Items[9].Title);  
 		}
+
+		[Fact]
+		public void GetAll_ShouldSkipTenItems_WhenSecondPageIsRequested()
+		{
+			var queryParams = new TicketQueryParameters
+			{
+				Page = 2,
+				PageSize = 10,
+			};
+
+			var tickets = new List<Ticket>
+			{
+				new Ticket(_fakeClock) { Id = 1, Title = "Ticket 1" },
+				new Ticket(_fakeClock) { Id = 2, Title = "Ticket 2" },
+				new Ticket(_fakeClock) { Id = 3, Title = "Ticket 3" },
+				new Ticket(_fakeClock) { Id = 4, Title = "Ticket 4" },
+				new Ticket(_fakeClock) { Id = 5, Title = "Ticket 5" },
+				new Ticket(_fakeClock) { Id = 6, Title = "Ticket 6" },
+				new Ticket(_fakeClock) { Id = 7, Title = "Ticket 7" },
+				new Ticket(_fakeClock) { Id = 8, Title = "Ticket 8" },
+				new Ticket(_fakeClock) { Id = 9, Title = "Ticket 9" },
+				new Ticket(_fakeClock) { Id = 10, Title = "Ticket 10" },
+				new Ticket(_fakeClock) { Id = 11, Title = "Ticket 11" },
+				new Ticket(_fakeClock) { Id = 12, Title = "Ticket 12" },
+				new Ticket(_fakeClock) { Id = 13, Title = "Ticket 13" },
+				new Ticket(_fakeClock) { Id = 14, Title = "Ticket 14" },
+				new Ticket(_fakeClock) { Id = 15, Title = "Ticket 15" }
+			};
+
+			_mockRepo.Setup(repo => repo.GetAll(queryParams)).Returns(tickets.AsQueryable());
+
+			var result = _service.GetAll(queryParams);
+
+			Assert.Equal(5, result.Items.Count);
+			Assert.Equal("Ticket 5", result.Items[0].Title);
+			Assert.Equal("Ticket 1", result.Items[4].Title);
+		}
 	}
 }

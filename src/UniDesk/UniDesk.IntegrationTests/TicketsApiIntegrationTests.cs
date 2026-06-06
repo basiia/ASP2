@@ -1,17 +1,16 @@
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
 using UniDesk.Web.DTOs;
 using Xunit;
 
 namespace UniDesk.IntegrationTests;
 
-public class TicketsApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class TicketsApiIntegrationTests : IClassFixture<UniDeskWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public TicketsApiIntegrationTests(WebApplicationFactory<Program> factory)
+    public TicketsApiIntegrationTests(UniDeskWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }

@@ -1,15 +1,14 @@
 using System.Net;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace UniDesk.IntegrationTests
 {
-    public class TicketValidationIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    public class TicketValidationIntegrationTests : IClassFixture<UniDeskWebApplicationFactory>
     {
         private readonly HttpClient _client;
 
-        public TicketValidationIntegrationTests(WebApplicationFactory<Program> factory)
+        public TicketValidationIntegrationTests(UniDeskWebApplicationFactory factory)
         {
             _client = factory.CreateClient();
         }

@@ -1,25 +1,24 @@
-using UniDesk.Web.DTOs;
+﻿using UniDesk.Web.DTOs;
 
-namespace UniDesk.Web.ViewModels
+namespace UniDesk.Web.ViewModels;
+public class TicketDetailsViewModel
 {
-    public class TicketDetailsViewModel
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Title { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
-        public string Description { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 
-        public string Status { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-        public string? OwnerName { get; set; }
+    public string? OwnerName { get; set; }
 
-        public bool CanUseDiscussion { get; set; }
+    public bool CanUseDiscussion { get; set; }
 
-        public List<TicketCommentDto> Comments { get; set; } = new();
+    public List<TicketCommentDto> Comments { get; set; } = new();
 
-        public CreateTicketCommentRequest NewComment { get; set; } = new();
-    }
+    public CreateTicketCommentRequest NewComment { get; set; } = new();
 }
+

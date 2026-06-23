@@ -1,7 +1,6 @@
-namespace UniDesk.Web.DTOs
+﻿namespace UniDesk.Web.DTOs;
+public class UpdateTicketStatusRequest
 {
-	public class UpdateTicketStatusRequest
-	{
-		public int Status { get; set; }
-	}
+	public int Status { get; set; }
 }
+

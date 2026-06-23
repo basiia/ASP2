@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
-namespace UniDesk.Web.Authorization
+namespace UniDesk.Web.Authorization;
+public class TicketAccessRequirement : IAuthorizationRequirement
 {
-    public class TicketAccessRequirement : IAuthorizationRequirement
-    {
-    }
 }
+

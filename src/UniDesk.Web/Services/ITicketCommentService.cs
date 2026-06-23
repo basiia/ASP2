@@ -1,15 +1,14 @@
-using UniDesk.Web.DTOs;
+﻿using UniDesk.Web.DTOs;
 
-namespace UniDesk.Web.Services
+namespace UniDesk.Web.Services;
+public interface ITicketCommentService
 {
-    public interface ITicketCommentService
-    {
-        Task<List<TicketCommentDto>> GetForTicketAsync(int ticketId);
+    Task<List<TicketCommentDto>> GetForTicketAsync(int ticketId);
 
-        Task<TicketCommentDto> CreateAsync(
-            int ticketId,
-            string authorId,
-            string authorName,
-            CreateTicketCommentRequest request);
-    }
+    Task<TicketCommentDto> CreateAsync(
+        int ticketId,
+        string authorId,
+        string authorName,
+        CreateTicketCommentRequest request);
 }
+

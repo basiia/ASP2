@@ -1,19 +1,18 @@
 ﻿using UniDesk.Web.Models;
 using UniDesk.Web.DTOs;
 
-namespace UniDesk.Web.Services
+namespace UniDesk.Web.Services;
+public class TicketMapper
 {
-	public class TicketMapper
+
+	public TicketReadDto MapTicketToDto(Ticket ticket)
 	{
-	
-		public TicketReadDto MapTicketToDto(Ticket ticket)
+		return new TicketReadDto
 		{
-			return new TicketReadDto
-			{
-				Id = ticket.Id,
-				Title = ticket.Title,
-				Status = ticket.Status.ToString()  
-			};
-		}
+			Id = ticket.Id,
+			Title = ticket.Title,
+			Status = ticket.Status.ToString()  
+		};
 	}
 }
+

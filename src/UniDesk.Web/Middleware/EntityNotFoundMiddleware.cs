@@ -1,88 +1,87 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniDesk.Web.Exceptions;
 
-namespace UniDesk.Web.Middleware
+namespace UniDesk.Web.Middleware;
+public class EntityNotFoundMiddleware
 {
-    public class EntityNotFoundMiddleware
+    private readonly RequestDelegate _next;
+    private readonly ILogger<EntityNotFoundMiddleware> _logger;
+
+    public EntityNotFoundMiddleware(
+        RequestDelegate next,
+        ILogger<EntityNotFoundMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<EntityNotFoundMiddleware> _logger;
+        _next = next;
+        _logger = logger;
+    }
 
-        public EntityNotFoundMiddleware(
-            RequestDelegate next,
-            ILogger<EntityNotFoundMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (EntityNotFoundException ex)
         {
-            try
+            _logger.LogWarning(
+                ex,
+                "Entity not found during request {Path}",
+                context.Request.Path.Value);
+
+            var problem = new ProblemDetails
             {
-                await _next(context);
-            }
-            catch (EntityNotFoundException ex)
+                Status = StatusCodes.Status404NotFound,
+                Title = "Nie znaleziono zasobu",
+                Detail = ex.Message,
+                Instance = context.Request.Path
+            };
+
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.ContentType = "application/problem+json";
+
+            await context.Response.WriteAsJsonAsync(problem);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Database update rejected during request {Path}",
+                context.Request.Path.Value);
+
+            var problem = new ProblemDetails
             {
-                _logger.LogWarning(
-                    ex,
-                    "Entity not found during request {Path}",
-                    context.Request.Path.Value);
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Niepoprawne dane zapisu",
+                Detail = "Nie mozna zapisac danych z powodu naruszenia zasad bazy danych.",
+                Instance = context.Request.Path
+            };
 
-                var problem = new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Nie znaleziono zasobu",
-                    Detail = ex.Message,
-                    Instance = context.Request.Path
-                };
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.ContentType = "application/problem+json";
 
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                context.Response.ContentType = "application/problem+json";
+            await context.Response.WriteAsJsonAsync(problem);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unhandled exception during request {Path}",
+                context.Request.Path.Value);
 
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (DbUpdateException ex)
+            var problem = new ProblemDetails
             {
-                _logger.LogWarning(
-                    ex,
-                    "Database update rejected during request {Path}",
-                    context.Request.Path.Value);
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Wystapil blad serwera",
+                Detail = "Wystapil nieoczekiwany blad aplikacji.",
+                Instance = context.Request.Path
+            };
 
-                var problem = new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Niepoprawne dane zapisu",
-                    Detail = "Nie mozna zapisac danych z powodu naruszenia zasad bazy danych.",
-                    Instance = context.Request.Path
-                };
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.ContentType = "application/problem+json";
 
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/problem+json";
-
-                await context.Response.WriteAsJsonAsync(problem);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    ex,
-                    "Unhandled exception during request {Path}",
-                    context.Request.Path.Value);
-
-                var problem = new ProblemDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "Wystapil blad serwera",
-                    Detail = "Wystapil nieoczekiwany blad aplikacji.",
-                    Instance = context.Request.Path
-                };
-
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Response.ContentType = "application/problem+json";
-
-                await context.Response.WriteAsJsonAsync(problem);
-            }
+            await context.Response.WriteAsJsonAsync(problem);
         }
     }
 }
+

@@ -1,7 +1,6 @@
-﻿namespace UniDesk.Web.Services
+﻿namespace UniDesk.Web.Services;
+public interface ISystemClock
 {
-	public interface ISystemClock
-	{
-		DateTime UtcNow { get; }
-	}
+	DateTime UtcNow { get; }
 }
+

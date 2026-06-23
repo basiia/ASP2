@@ -1,7 +1,6 @@
-namespace UniDesk.Web.Services
+﻿namespace UniDesk.Web.Services;
+public interface IMarkdownFormatter
 {
-    public interface IMarkdownFormatter
-    {
-        string ToSafeHtml(string markdown);
-    }
+    string ToSafeHtml(string markdown);
 }
+

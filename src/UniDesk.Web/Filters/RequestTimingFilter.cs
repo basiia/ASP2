@@ -1,41 +1,40 @@
 ﻿using System.Diagnostics;
 
-namespace UniDesk.Web.Filters
+namespace UniDesk.Web.Filters;
+public class RequestTimingFilter : IEndpointFilter
 {
-    public class RequestTimingFilter : IEndpointFilter
+    private readonly ILogger<RequestTimingFilter> _logger;
+
+    public RequestTimingFilter(ILogger<RequestTimingFilter> logger)
     {
-        private readonly ILogger<RequestTimingFilter> _logger;
+        _logger = logger;
+    }
 
-        public RequestTimingFilter(ILogger<RequestTimingFilter> logger)
+    public async ValueTask<object?> InvokeAsync(
+        EndpointFilterInvocationContext context,
+        EndpointFilterDelegate next)
+    {
+        var path = context.HttpContext.Request.Path;
+        var method = context.HttpContext.Request.Method;
+
+        _logger.LogInformation("Start żądania Minimal API: {Method} {Path}", method, path);
+
+        var stopwatch = Stopwatch.StartNew();
+
+        try
         {
-            _logger = logger;
+            return await next(context);
         }
-
-        public async ValueTask<object?> InvokeAsync(
-            EndpointFilterInvocationContext context,
-            EndpointFilterDelegate next)
+        finally
         {
-            var path = context.HttpContext.Request.Path;
-            var method = context.HttpContext.Request.Method;
+            stopwatch.Stop();
 
-            _logger.LogInformation("Start żądania Minimal API: {Method} {Path}", method, path);
-
-            var stopwatch = Stopwatch.StartNew();
-
-            try
-            {
-                return await next(context);
-            }
-            finally
-            {
-                stopwatch.Stop();
-
-                _logger.LogInformation(
-                    "Koniec żądania Minimal API: {Method} {Path}. Czas: {ElapsedMilliseconds} ms",
-                    method,
-                    path,
-                    stopwatch.ElapsedMilliseconds);
-            }
+            _logger.LogInformation(
+                "Koniec żądania Minimal API: {Method} {Path}. Czas: {ElapsedMilliseconds} ms",
+                method,
+                path,
+                stopwatch.ElapsedMilliseconds);
         }
     }
 }
+

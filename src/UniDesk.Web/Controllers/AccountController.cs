@@ -5,132 +5,131 @@ using UniDesk.Web.Models;
 using UniDesk.Web.ViewModels;
 using System.Security.Claims;
 
-namespace UniDesk.Web.Controllers
+namespace UniDesk.Web.Controllers;
+public class AccountController : Controller
 {
-    public class AccountController : Controller
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+
+    public AccountController(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
 
-        public AccountController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult Register(string? returnUrl = null)
+    {
+        return View(new RegisterViewModel
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
+            ReturnUrl = returnUrl
+        });
+    }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult Register(string? returnUrl = null)
+    [AllowAnonymous]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterViewModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            return View(new RegisterViewModel
-            {
-                ReturnUrl = returnUrl
-            });
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                OrganizationName = model.OrganizationName
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                var shortId = user.Id.Length >= 8 ? user.Id[..8] : user.Id;
-
-                await _userManager.AddClaimAsync(
-                    user,
-                    new Claim("EmployeeId", $"EMP-{shortId}"));
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToLocal(model.ReturnUrl);
-            }
-
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
             return View(model);
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult Login(string? returnUrl = null)
+        var user = new ApplicationUser
         {
-            return View(new LoginViewModel
-            {
-                ReturnUrl = returnUrl
-            });
+            UserName = model.Email,
+            Email = model.Email,
+            OrganizationName = model.OrganizationName
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+
+        if (result.Succeeded)
+        {
+            var shortId = user.Id.Length >= 8 ? user.Id[..8] : user.Id;
+
+            await _userManager.AddClaimAsync(
+                user,
+                new Claim("EmployeeId", $"EMP-{shortId}"));
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToLocal(model.ReturnUrl);
         }
 
-        [AllowAnonymous]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+
+        foreach (var error in result.Errors)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
 
-            var result = await _signInManager.PasswordSignInAsync(
-                model.Email,
-                model.Password,
-                model.RememberMe,
-                lockoutOnFailure: false);
+        return View(model);
+    }
 
-            if (result.Succeeded)
-            {
-                return RedirectToLocal(model.ReturnUrl);
-            }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult Login(string? returnUrl = null)
+    {
+        return View(new LoginViewModel
+        {
+            ReturnUrl = returnUrl
+        });
+    }
 
-            ModelState.AddModelError(string.Empty, "Nieprawidłowy e-mail lub hasło");
+    [AllowAnonymous]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
             return View(model);
         }
 
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        var result = await _signInManager.PasswordSignInAsync(
+            model.Email,
+            model.Password,
+            model.RememberMe,
+            lockoutOnFailure: false);
+
+        if (result.Succeeded)
         {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToLocal(model.ReturnUrl);
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult AccessDenied()
+        ModelState.AddModelError(string.Empty, "Nieprawidłowy e-mail lub hasło");
+        return View(model);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+
+
+    private IActionResult RedirectToLocal(string? returnUrl)
+    {
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
         {
-            return View();
+            return LocalRedirect(returnUrl);
         }
 
-
-        private IActionResult RedirectToLocal(string? returnUrl)
-        {
-            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return LocalRedirect(returnUrl);
-            }
-
-            return RedirectToAction("Index", "Tickets");
-        }
+        return RedirectToAction("Index", "Tickets");
     }
 }
+
 

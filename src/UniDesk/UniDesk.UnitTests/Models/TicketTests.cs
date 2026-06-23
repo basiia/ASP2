@@ -7,92 +7,91 @@ using System.ComponentModel.DataAnnotations;
 using UniDesk.UnitTests.Fakes;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace UniDesk.UnitTests.Models
+namespace UniDesk.UnitTests.Models;
+public class TicketTests
 {
-	public class TicketTests
+	private readonly Mock<ITicketRepository> _mockRepo;
+	private readonly TicketService _service;
+	private readonly ISystemClock _fakeClock;
+
+	public TicketTests()
 	{
-		private readonly Mock<ITicketRepository> _mockRepo;
-		private readonly TicketService _service;
-		private readonly ISystemClock _fakeClock;
+		_mockRepo = new Mock<ITicketRepository>();
+		_fakeClock = new FakeClock();
+        _service = new TicketService(
+            _mockRepo.Object,
+            _fakeClock,
+            NullLogger<TicketService>.Instance);
+    }
 
-		public TicketTests()
+	[Fact]
+	public void Ticket_ShouldHaveCreatedAt_WhenCreated()
+	{
+		var ticket = new Ticket(_fakeClock)
 		{
-			_mockRepo = new Mock<ITicketRepository>();
-			_fakeClock = new FakeClock();
-            _service = new TicketService(
-                _mockRepo.Object,
-                _fakeClock,
-                NullLogger<TicketService>.Instance);
-        }
+			Title = "Sample Title",
+			Description = "Sample Description"
+		};
 
-		[Fact]
-		public void Ticket_ShouldHaveCreatedAt_WhenCreated()
+		Assert.Equal(new DateTime(2026, 04, 08, 12, 00, 00, DateTimeKind.Utc), ticket.CreatedAt);
+	}
+
+	[Fact]
+	public void Ticket_ShouldHaveStatusNew_WhenCreated()
+	{
+		var ticket = new Ticket(_fakeClock)
 		{
-			var ticket = new Ticket(_fakeClock)
-			{
-				Title = "Sample Title",
-				Description = "Sample Description"
-			};
+			Title = "Sample Title",
+			Description = "Sample Description"
+		};
 
-			Assert.Equal(new DateTime(2026, 04, 08, 12, 00, 00, DateTimeKind.Utc), ticket.CreatedAt);
-		}
+		Assert.Equal(TicketStatus.New, ticket.Status);
+	}
 
-		[Fact]
-		public void Ticket_ShouldHaveStatusNew_WhenCreated()
+	[Fact]
+	public void Ticket_ShouldHaveRequiredTitle_WhenCreated()
+	{
+		var ticket = new Ticket(_fakeClock)
 		{
-			var ticket = new Ticket(_fakeClock)
-			{
-				Title = "Sample Title",
-				Description = "Sample Description"
-			};
+			Title = "Sample Title",
+			Description = "Sample Description"
+		};
 
-			Assert.Equal(TicketStatus.New, ticket.Status);
-		}
+		var validationContext = new ValidationContext(ticket) { MemberName = "Title" };
+		var validationResults = new System.Collections.Generic.List<ValidationResult>();
+		bool isValid = Validator.TryValidateProperty(ticket.Title, validationContext, validationResults);
 
-		[Fact]
-		public void Ticket_ShouldHaveRequiredTitle_WhenCreated()
+		Assert.True(isValid);
+	}
+
+	[Fact]
+	public void Ticket_ShouldHaveRequiredDescription_WhenCreated()
+	{
+		var ticket = new Ticket(_fakeClock)
 		{
-			var ticket = new Ticket(_fakeClock)
-			{
-				Title = "Sample Title",
-				Description = "Sample Description"
-			};
+			Title = "Sample Title",
+			Description = "Sample Description"
+		};
 
-			var validationContext = new ValidationContext(ticket) { MemberName = "Title" };
-			var validationResults = new System.Collections.Generic.List<ValidationResult>();
-			bool isValid = Validator.TryValidateProperty(ticket.Title, validationContext, validationResults);
+		var validationContext = new ValidationContext(ticket) { MemberName = "Description" };
+		var validationResults = new System.Collections.Generic.List<ValidationResult>();
+		bool isValid = Validator.TryValidateProperty(ticket.Description, validationContext, validationResults);
 
-			Assert.True(isValid);
-		}
+		Assert.True(isValid);
+	}
 
-		[Fact]
-		public void Ticket_ShouldHaveRequiredDescription_WhenCreated()
+	[Fact]
+	public void UpdateStatus_ShouldThrowException_WhenTicketIsAlreadyClosed()
+	{
+		var ticket = new Ticket(_fakeClock)
 		{
-			var ticket = new Ticket(_fakeClock)
-			{
-				Title = "Sample Title",
-				Description = "Sample Description"
-			};
+			Id = 1,
+			Status = TicketStatus.Closed,
+		};
 
-			var validationContext = new ValidationContext(ticket) { MemberName = "Description" };
-			var validationResults = new System.Collections.Generic.List<ValidationResult>();
-			bool isValid = Validator.TryValidateProperty(ticket.Description, validationContext, validationResults);
+		_mockRepo.Setup(repo => repo.GetById(It.IsAny<int>())).Returns(ticket);
 
-			Assert.True(isValid);
-		}
-
-		[Fact]
-		public void UpdateStatus_ShouldThrowException_WhenTicketIsAlreadyClosed()
-		{
-			var ticket = new Ticket(_fakeClock)
-			{
-				Id = 1,
-				Status = TicketStatus.Closed,
-			};
-
-			_mockRepo.Setup(repo => repo.GetById(It.IsAny<int>())).Returns(ticket);
-
-			Assert.Throws<InvalidOperationException>(() => _service.UpdateStatus(ticket.Id, TicketStatus.InProgress));
-		}
+		Assert.Throws<InvalidOperationException>(() => _service.UpdateStatus(ticket.Id, TicketStatus.InProgress));
 	}
 }
+
